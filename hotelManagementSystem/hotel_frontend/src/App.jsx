@@ -31,12 +31,24 @@ const CheckOut = lazy(() => import("./Pages/Customer/CheckOut"));
 const CheckIn = lazy(() => import("./Pages/Customer/CheckIn"));
 
 // Receptionist Pages
-const ReceptionisDashBoard = lazy(() => import("./Pages/Receptionist/ReceptionisDashBoard"));
-const BookingRequests = lazy(() => import("./Pages/Receptionist/BookingRequests"));
-const RoomsManagement = lazy(() => import("./Pages/Receptionist/RoomsManagement"));
-const CheckInManagement = lazy(() => import("./Pages/Receptionist/CheckInManagement"));
-const CheckOutManagement = lazy(() => import("./Pages/Receptionist/CheckOutManagement"));
-const PaymentManagement = lazy(() => import("./Pages/Receptionist/PaymentManagement"));
+const ReceptionisDashBoard = lazy(
+  () => import("./Pages/Receptionist/ReceptionisDashBoard"),
+);
+const BookingRequests = lazy(
+  () => import("./Pages/Receptionist/BookingRequests"),
+);
+const RoomsManagement = lazy(
+  () => import("./Pages/Receptionist/RoomsManagement"),
+);
+const CheckInManagement = lazy(
+  () => import("./Pages/Receptionist/CheckInManagement"),
+);
+const CheckOutManagement = lazy(
+  () => import("./Pages/Receptionist/CheckOutManagement"),
+);
+const PaymentManagement = lazy(
+  () => import("./Pages/Receptionist/PaymentManagement"),
+);
 
 // Admin Pages
 const AdminDashBoard = lazy(() => import("./Pages/Admin/AdminDashBoard"));
@@ -47,94 +59,103 @@ const SystemLogs = lazy(() => import("./Pages/Admin/SystemLogs"));
 
 function App() {
   const user = {
-	name: "Malak",
-	role: "receptionist",
+    name: "Malak",
+    role: "receptionist",
   };
 
   useEffect(() => {
-	AOS.init({
-	  duration: 800,
-	  once: true,
-	});
+    AOS.init({
+      duration: 800,
+      once: true,
+    });
   }, []);
 
   return (
-	<>
-	  <Suspense fallback={<LoadingPage />}>
-		<Routes>
-		  {/* Public Routes */}
-		  <Route path="/" element={<Home />} />
-		  <Route path="/login" element={<Login />} />
-		  <Route path="/register" element={<Register />} />
-		  <Route path="/settings" element={<Settings />} />
-		  <Route path="/profile" element={<Profile />} />
-		  <Route path="/notifications" element={<Notifications />} />
+    <>
+      <Suspense fallback={<LoadingPage />}>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/notifications" element={<Notifications />} />
 
-		  {/* ===================================== Customer ==================================  */}
+          {/* ===================================== Customer ==================================  */}
 
-		  <Route element={<ProtectedRoute allowedRoles={["customer"]} />}>
-			<Route path="/customer" element={<CustomerLayout />}>
-			  <Route index element={<BrowseRooms />} />
-			  <Route path="rooms/:roomId" element={<RoomDetails />} />
-			  <Route path="book-room/:roomId" element={<BookRoom />} />
-			  <Route path="favourites" element={<Favourites />} />
-			  <Route path="my-bookings" element={<MyBookings />} />
-			  <Route path="check-out/:bookingId" element={<CheckOut />} />
-			  <Route path="check-in/:roomId" element={<CheckIn />} />
-			</Route>
-		  </Route>
+          <Route element={<ProtectedRoute allowedRoles={["customer"]} />}>
+            <Route path="/customer" element={<CustomerLayout />}>
+              <Route index element={<BrowseRooms />} />
+              <Route path="rooms/:roomId" element={<RoomDetails />} />
+              <Route path="book-room/:roomId" element={<BookRoom />} />
+              <Route path="favourites" element={<Favourites />} />
+              <Route path="my-bookings" element={<MyBookings />} />
+              <Route path="check-out/:bookingId" element={<CheckOut />} />
+              <Route path="check-in/:roomId" element={<CheckIn />} />
+            </Route>
+          </Route>
 
-		  {/* ===================================== Receptionist ==================================  */}
+          {/* ===================================== Receptionist ==================================  */}
 
-		  <Route element={<ProtectedRoute allowedRoles={["receptionist"]} />}>
-			<Route path="/receptionist" element={<ReceptionistLayout />}>
-			  <Route index element={<ReceptionisDashBoard />} />
-			  <Route path="booking-requests" element={<BookingRequests />} />
-			  <Route path="rooms/:roomId" element={<RoomDetails />} />
-			  <Route path="room-management" element={<RoomsManagement />} />
-			  <Route path="check-in-management" element={<CheckInManagement />} />
-			  <Route path="check-out-management" element={<CheckOutManagement />} />
-			  <Route path="payment-management" element={<PaymentManagement />} />
-			</Route>
-		  </Route>
+          <Route element={<ProtectedRoute allowedRoles={["receptionist"]} />}>
+            <Route path="/receptionist" element={<ReceptionistLayout />}>
+              <Route index element={<ReceptionisDashBoard />} />
+              <Route path="booking-requests" element={<BookingRequests />} />
+              <Route path="rooms/:roomId" element={<RoomDetails />} />
+              <Route path="room-management" element={<RoomsManagement />} />
+              <Route
+                path="check-in-management"
+                element={<CheckInManagement />}
+              />
+              <Route
+                path="check-out-management"
+                element={<CheckOutManagement />}
+              />
+              <Route
+                path="payment-management"
+                element={<PaymentManagement />}
+              />
+            </Route>
+          </Route>
 
-		  {/* ===================================== Admin ==================================  */}
+          {/* ===================================== Admin ==================================  */}
 
-		  <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
-			<Route path="/admin" element={<AdminLayout />}>
-			  <Route index element={<AdminDashBoard />} />
-			  <Route path="manage-rooms" element={<ManageRooms />} />
-			  <Route path="rooms" element={<BrowseRooms />} />
-			  <Route path="rooms/:roomId" element={<RoomDetails />} />
-			  <Route path="manage-users" element={<ManageUsers />} />
-			  <Route path="reviews" element={<Reviews />} />
-			  <Route path="system-logs" element={<SystemLogs />} />
-			</Route>
-		  </Route>
+          <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminDashBoard />} />
+              <Route path="manage-rooms" element={<ManageRooms />} />
+              <Route path="rooms" element={<BrowseRooms />} />
+              <Route path="rooms/:roomId" element={<RoomDetails />} />
+              <Route path="manage-users" element={<ManageUsers />} />
+              <Route path="reviews" element={<Reviews />} />
+              <Route path="system-logs" element={<SystemLogs />} />
+            </Route>
+          </Route>
 
-		  {/* Redirect based on user role */}
-		  <Route
-			path="/"
-			element={
-			  user ? (
-				user.role === "admin" ? (
-				  <Navigate to="/admin" />
-				) : user.role === "receptionist" ? (
-				  <Navigate to="/receptionist" />
-				) : (
-				  <Navigate to="/customer" />
-				)
-			  ) : (
-				<Navigate to="/" />
-			  )
-			}
-		  />
+          {/* Redirect based on user role */}
+          <Route
+            path="/"
+            element={
+              user ? (
+                user.role === "admin" ? (
+                  <Navigate to="/admin" />
+                ) : user.role === "receptionist" ? (
+                  <Navigate to="/receptionist" />
+                ) : (
+                  <Navigate to="/customer" />
+                )
+              ) : (
+                <Navigate to="/" />
+              )
+            }
+          />
 
-		  {/* 404 Not Found */}
-		  <Route path="*" element={<NotFound />} />
-		</Routes>
-	  </Suspense>
-	</>
+          {/* 404 Not Found */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
+    </>
   );
 }
 
