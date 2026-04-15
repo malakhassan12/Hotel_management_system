@@ -1,14 +1,23 @@
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 
 const ProtectedRoute = ({ allowedRoles }) => {
-  const user = { role: "receptionist" }; 
+  const user = {
+    name: "Malak",
+    role: "receptionist",
+  };
 
-  if (!user) return <Navigate to="/login" replace />;
-  
-  return allowedRoles.includes(user.role) 
-    ? <Outlet /> 
-    : <Navigate to="/not-found" replace />;
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
+    if (user.role === "admin") return <Navigate to="/admin" replace />;
+    if (user.role === "receptionist") return <Navigate to="/receptionist" replace />;
+    if (user.role === "customer") return <Navigate to="/customer" replace />;
+    return <Navigate to="/login" replace />;
+  }
+
+  return <Outlet />;
 };
-
 
 export default ProtectedRoute;

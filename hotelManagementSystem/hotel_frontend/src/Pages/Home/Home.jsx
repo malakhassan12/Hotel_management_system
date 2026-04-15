@@ -1,3 +1,5 @@
+import { lazy } from "react";
+
 // ******************************** Mantline UI ********************************
 
 import { useDisclosure } from "@mantine/hooks";
@@ -14,10 +16,15 @@ import {
   Space,
   Flex,
 } from "@mantine/core";
-import StartedNav from "../../Components/Nav/StartedNav";
-import HomeCard from "../../Components/Card/HomeCard";
+// ******************************** Components ********************************
+
+const StartedHeader = lazy(() => import("../../Components/Header/StartedHeader"));
+const HomeCard = lazy(() => import("../../Components/Card/HomeCard"));
+const Footer = lazy(() => import("../../Components/Footer/Footer"));
+
+// ******************************** Constants ********************************
+
 import { cardsData } from "../../Constants/HomeConstants";
-import { Footer } from "../../Components/Footer/Footer";
 
 const Home = () => {
   const [opened, { toggle }] = useDisclosure();
@@ -32,7 +39,7 @@ const Home = () => {
       }}
       padding="md"
     >
-      <StartedNav toggle={toggle} opened={opened} />
+      <StartedHeader toggle={toggle} opened={opened} />
 
       <AppShell.Main>
         <Container size="lg" py={80}>
@@ -43,7 +50,7 @@ const Home = () => {
                 ta="center"
                 bg={"gold.2"}
                 bdrs={"xl"}
-                style={{ padding: ".25rem" }}
+                style={{ padding: ".29rem" }}
               >
                 <Title order={6} c="gold.6">
                   Professional Hotel Management System
@@ -84,7 +91,6 @@ const Home = () => {
                   size="sm"
                   radius="md"
                   variant="filled"
-                  color="gold"
                   style={{
                     transition: "all 0.2s ease",
                     "&:hover": {
@@ -95,20 +101,7 @@ const Home = () => {
                   Get Started →
                 </Button>
 
-                <Button
-                  size="sm"
-                  radius="md"
-                  variant="outline"
-                  color="gold"
-                  style={{
-                    transition: "all 0.2s ease",
-                    "&:hover": {
-                      transform: "translateY(-2px)",
-                    },
-                  }}
-                >
-                  View Demo
-                </Button>
+                <Button variant="outline">View Demo</Button>
               </Group>
             </Stack>
           </div>

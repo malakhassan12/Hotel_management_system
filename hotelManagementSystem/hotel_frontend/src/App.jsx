@@ -1,7 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { lazy, Suspense, useEffect } from "react";
 
-import AOS from "aos";
 import "aos/dist/aos.css";
 
 import LoadingPage from "./Pages/LoadingPage/LoadingPage";
@@ -31,8 +30,8 @@ const CheckOut = lazy(() => import("./Pages/Customer/CheckOut"));
 const CheckIn = lazy(() => import("./Pages/Customer/CheckIn"));
 
 // Receptionist Pages
-const ReceptionisDashBoard = lazy(
-  () => import("./Pages/Receptionist/ReceptionisDashBoard"),
+const ReceptionistDashBoard = lazy(
+  () => import("./Pages/Receptionist/ReceptionistDashBoard"),
 );
 const BookingRequests = lazy(
   () => import("./Pages/Receptionist/BookingRequests"),
@@ -64,9 +63,8 @@ function App() {
   };
 
   useEffect(() => {
-    AOS.init({
-      duration: 800,
-      once: true,
+    import("aos").then((aos) => {
+      aos.init({ disable: "mobile", once: true, duration: 800 });
     });
   }, []);
 
@@ -100,10 +98,16 @@ function App() {
 
           <Route element={<ProtectedRoute allowedRoles={["receptionist"]} />}>
             <Route path="/receptionist" element={<ReceptionistLayout />}>
-              <Route index element={<ReceptionisDashBoard />} />
+              <Route index element={<ReceptionistDashBoard />} />
               <Route path="booking-requests" element={<BookingRequests />} />
-              <Route path="rooms/:roomId" element={<RoomDetails />} />
+              <Route path="rooms">
+                <Route index element={<BrowseRooms />} />
+
+                <Route path=":roomId" element={<RoomDetails />} />
+              </Route>
+              {/* <Route path="rooms/:roomId" element={<RoomDetails />} /> */}
               <Route path="room-management" element={<RoomsManagement />} />
+
               <Route
                 path="check-in-management"
                 element={<CheckInManagement />}
