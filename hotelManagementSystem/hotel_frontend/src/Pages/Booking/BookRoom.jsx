@@ -1,6 +1,6 @@
 import React from 'react'
 
-const ReceptionisDashBoard = () => {
+const BookRoom = () => {
   return (
     <div>
       
@@ -8,4 +8,4 @@ const ReceptionisDashBoard = () => {
   )
 }
 
-export default ReceptionisDashBoard
+export default BookRoom

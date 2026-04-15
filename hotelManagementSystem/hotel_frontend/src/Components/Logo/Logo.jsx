@@ -1,10 +1,14 @@
+// ******************************** Mantline UI ********************************
+
 import { Group, Text } from "@mantine/core";
-import { MdHotel } from "react-icons/md";
+// ******************************** Icons ********************************
+
+import { IconHotelService } from '@tabler/icons-react';
 
 const Logo = () => {
   return (
     <Group gap="xs" align="center">
-      <MdHotel size={24} color="var(--mantine-primary-color-filled)" />
+      <IconHotelService size={24} color="var(--mantine-primary-color-filled)" />
 
       <Text
         size="xl"

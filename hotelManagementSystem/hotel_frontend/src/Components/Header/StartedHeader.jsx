@@ -1,8 +1,12 @@
+// ******************************** Mantline UI ********************************
+
 import { AppShell, Burger, Button, Group } from "@mantine/core";
+// ******************************** Components ********************************
+
 import Logo from "../Logo/Logo";
 import ThemeToggle from "../Buttons/ThemeToggle";
 
-const StartedNav = ({ opened, toggle }) => {
+const StartedHeader = ({ opened, toggle }) => {
   const Buttons = () => {
     return (
       <Group gap="sm">
@@ -37,4 +41,4 @@ const StartedNav = ({ opened, toggle }) => {
   );
 };
 
-export default StartedNav;
+export default StartedHeader;
