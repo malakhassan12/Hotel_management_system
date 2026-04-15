@@ -1,6 +1,6 @@
 // ******************************** Mantline UI ********************************
 
-import { Box, Grid, Space, Stack, Text, Title } from "@mantine/core";
+import {  Grid, Space, Stack,  } from "@mantine/core";
 // ******************************** Components ********************************
 
 import DashboardPerfomanceCards from "../../Components/Analysis/Receptionist/DashboardPerfomanceCards";

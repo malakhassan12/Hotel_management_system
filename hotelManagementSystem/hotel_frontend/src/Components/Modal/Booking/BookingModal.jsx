@@ -30,7 +30,7 @@ import {
 import getStatusColor from "../../../Functions/Booking/getStatusColor";
 import getPaymentStatusColor from "../../../Functions/Payment/getPaymentStatusColor";
 
-const BookingModal = ({ opened, close, booking }) => {
+const BookingModal = ({ opened, close, booking, type = "booking" }) => {
   const defaultBooking = {
     id: "B001",
     status: "Pending",
@@ -239,25 +239,26 @@ const BookingModal = ({ opened, close, booking }) => {
 
           <Divider />
 
-          {/* Action Buttons */}
-          <Group justify="space-between" mt="md">
-            <Button
-              variant="outline"
-              color="red"
-              leftSection={<IconX size={16} />}
-              onClick={close}
-            >
-              Reject
-            </Button>
-            <Button
-              variant="filled"
-              color="green"
-              leftSection={<IconCheck size={16} />}
-              onClick={close}
-            >
-              Accept
-            </Button>
-          </Group>
+          {type == "booking" && (
+            <Group justify="space-between" mt="md">
+              <Button
+                variant="outline"
+                color="red"
+                leftSection={<IconX size={16} />}
+                onClick={close}
+              >
+                Reject
+              </Button>
+              <Button
+                variant="filled"
+                color="green"
+                leftSection={<IconCheck size={16} />}
+                onClick={close}
+              >
+                Accept
+              </Button>
+            </Group>
+          )}
         </Stack>
       </Modal>
     </>

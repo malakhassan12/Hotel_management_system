@@ -19,6 +19,7 @@ import NavMenu from "../Menu/NavMenu";
 // ******************************** Screens ********************************
 
 import Screens from "../../Utils/Screens/Screens";
+import { Link } from "react-router-dom";
 
 const GeneralHeader = ({
   mobileOpened,
@@ -39,7 +40,6 @@ const GeneralHeader = ({
       }}
     >
       <Group h="100%" px="md" justify="space-between" wrap="nowrap">
-        {/* القسم الأيسر - Burger و Logo */}
         <Group gap="xs" wrap="nowrap">
           <Burger
             opened={mobileOpened}
@@ -65,7 +65,6 @@ const GeneralHeader = ({
           {!isMobile && <Logo />}
         </Group>
 
-        {/* القسم الأيمن - الإشعارات والتبديل والمستخدم */}
         <Group gap="sm" wrap="nowrap">
           {/* Theme Toggle Button */}
           <Box
@@ -80,6 +79,8 @@ const GeneralHeader = ({
 
           {/* Notifications Button with Indicator */}
           <UnstyledButton
+             component={Link}
+            to="notifications"
             style={{
               padding: "8px",
               borderRadius: "50%",
@@ -93,8 +94,9 @@ const GeneralHeader = ({
                   "light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-6))",
               },
             }}
+
           >
-            <Indicator color="red" size={10} processing offset={5} withBorder>
+            <Indicator color="red" size={10} processing offset={5} withBorder >
               <IconBell
                 size={20}
                 style={{
