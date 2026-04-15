@@ -41,12 +41,7 @@ const ReceptionistNavLinks = [
     path: "check-out-management",
     icon: "IconDoorExit",
   },
-  {
-    id: "payment",
-    label: "Payment Management",
-    path: "payment-management",
-    icon: "IconCreditCard",
-  },
+ 
 ];
 
 export { ReceptionistNavLinks };

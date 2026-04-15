@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 // ******************************** Mantline UI ********************************
 
 import { Space } from "@mantine/core";
@@ -6,8 +8,12 @@ import { Space } from "@mantine/core";
 import BookingPerformanceCards from "../../Components/Analysis/Booking/BookingPerfomanceCards";
 import InitialBox from "../../Components/Box/InitialBox";
 import BookingRequestTable from "../../Components/Table/BookingRequestTable";
+import SearchBySelect from "../../Components/Search/SearchBySelect";
 
 const BookingRequests = () => {
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+
   return (
     <div>
       <Space h={"md"} />
@@ -19,6 +25,15 @@ const BookingRequests = () => {
       <Space h={"md"} />
 
       <BookingPerformanceCards />
+      <Space h={"md"} />
+
+      <SearchBySelect
+        statusValue={statusFilter}
+        onStatusChange={setStatusFilter}
+        searchValue={searchQuery}
+        onSearchChange={(e) => setSearchQuery(e.target.value)}
+        showSearch={true}
+      />
       <Space h={"md"} />
 
       <BookingRequestTable />

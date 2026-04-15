@@ -13,7 +13,6 @@ const Login = lazy(() => import("./Pages/Auth/Login/Login"));
 const Register = lazy(() => import("./Pages/Auth/Register/Register"));
 const BrowseRooms = lazy(() => import("./Pages/Room/BrowseRooms"));
 const Settings = lazy(() => import("./Pages/Settings"));
-const Profile = lazy(() => import("./Pages/Profile"));
 const Notifications = lazy(() => import("./Pages/Notifications"));
 
 // Layout Pages
@@ -45,9 +44,6 @@ const CheckInManagement = lazy(
 const CheckOutManagement = lazy(
   () => import("./Pages/Receptionist/CheckOutManagement"),
 );
-const PaymentManagement = lazy(
-  () => import("./Pages/Receptionist/PaymentManagement"),
-);
 
 // Admin Pages
 const AdminDashBoard = lazy(() => import("./Pages/Admin/AdminDashBoard"));
@@ -76,9 +72,6 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/notifications" element={<Notifications />} />
 
           {/* ===================================== Customer ==================================  */}
 
@@ -91,6 +84,8 @@ function App() {
               <Route path="my-bookings" element={<MyBookings />} />
               <Route path="check-out/:bookingId" element={<CheckOut />} />
               <Route path="check-in/:roomId" element={<CheckIn />} />
+              <Route path="settings" element={<Settings />} />
+              <Route path="notifications" element={<Notifications />} />
             </Route>
           </Route>
 
@@ -116,10 +111,8 @@ function App() {
                 path="check-out-management"
                 element={<CheckOutManagement />}
               />
-              <Route
-                path="payment-management"
-                element={<PaymentManagement />}
-              />
+              <Route path="settings" element={<Settings />} />
+              <Route path="notifications" element={<Notifications />} />
             </Route>
           </Route>
 
@@ -134,6 +127,8 @@ function App() {
               <Route path="manage-users" element={<ManageUsers />} />
               <Route path="reviews" element={<Reviews />} />
               <Route path="system-logs" element={<SystemLogs />} />
+              <Route path="settings" element={<Settings />} />
+              <Route path="notifications" element={<Notifications />} />
             </Route>
           </Route>
 

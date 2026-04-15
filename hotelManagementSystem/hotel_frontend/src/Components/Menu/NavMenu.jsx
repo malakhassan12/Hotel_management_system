@@ -1,10 +1,10 @@
 import { Avatar, Group, Menu, Text, UnstyledButton } from "@mantine/core";
 import {
-  IconHelpCircle,
   IconLogout,
   IconSettings,
   IconUser,
 } from "@tabler/icons-react";
+import { Link } from "react-router-dom";
 
 const NavMenu = () => {
   return (
@@ -25,18 +25,13 @@ const NavMenu = () => {
 
       <Menu.Dropdown>
         <Menu.Label>Account</Menu.Label>
-        <Menu.Item leftSection={<IconUser size={14} />}>Profile</Menu.Item>
-        <Menu.Item leftSection={<IconSettings size={14} />}>Settings</Menu.Item>
-
-        <Menu.Divider />
-
-        <Menu.Label>Support</Menu.Label>
-        <Menu.Item leftSection={<IconHelpCircle size={14} />}>
-          Help Center
+        <Menu.Item leftSection={<IconSettings size={14} />}>
+          <Link to={"settings"}>Settings</Link>
         </Menu.Item>
 
         <Menu.Divider />
 
+      
         <Menu.Item color="red" leftSection={<IconLogout size={14} />}>
           Logout
         </Menu.Item>
