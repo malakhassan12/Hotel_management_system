@@ -10,7 +10,7 @@ import GeneralNav from "../Components/Nav/GeneralNav";
 
 import { Outlet } from "react-router-dom";
 
-const ReceptionistLayout = () => {
+const CustomerLayout = () => {
   const [disabled] = useDisclosure();
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
@@ -41,4 +41,4 @@ const ReceptionistLayout = () => {
   );
 };
 
-export default ReceptionistLayout;
+export default CustomerLayout;

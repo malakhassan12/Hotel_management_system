@@ -5,8 +5,10 @@ import {
   IconUser,
 } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
+import useAuthStore from "../../Store/authStore";
 
 const NavMenu = () => {
+  const { user, role } = useAuthStore();
   return (
     <Menu shadow="md" width={200} position="bottom-end">
       <Menu.Target>
@@ -16,9 +18,13 @@ const NavMenu = () => {
               <IconUser size={14} />
             </Avatar>
             <Text size="sm" fw={500} visibleFrom="sm">
-              Malak Hassan
+             {user?.fullName}
             </Text>
-            {/*Role */}
+      
+              <Text size="sm" fw={500} visibleFrom="sm">
+                {role}
+              </Text>
+          
           </Group>
         </UnstyledButton>
       </Menu.Target>
@@ -32,9 +38,17 @@ const NavMenu = () => {
         <Menu.Divider />
 
       
-        <Menu.Item color="red" leftSection={<IconLogout size={14} />}>
+        {/* <Menu.Item color="red" leftSection={<IconLogout size={14} />}>
           Logout
-        </Menu.Item>
+        </Menu.Item> */}
+        <Menu.Item
+  color="red"
+  leftSection={<IconLogout size={14} />}
+  component={Link}
+  to="/logout"
+>
+  Logout
+</Menu.Item>
       </Menu.Dropdown>
     </Menu>
   );
