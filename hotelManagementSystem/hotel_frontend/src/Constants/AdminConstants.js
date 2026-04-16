@@ -1,4 +1,4 @@
-const ReceptionistNavLinks = [
+const AdminNavLinks = [
   {
     id: "dashboard",
     label: "Dashboard",
@@ -7,10 +7,10 @@ const ReceptionistNavLinks = [
     end: true,
   },
   {
-    id: "bookingRequests",
-    label: "Booking Requests",
-    path: "booking-requests",
-    icon: "IconCalendarCheck",
+    id: "manage users",
+    label: "Manage Users",
+    path: "manage-users",
+    icon: "IconUsers",
   },
   {
     id: "rooms",
@@ -25,21 +25,21 @@ const ReceptionistNavLinks = [
       {
         id: "roomManagement",
         label: "Room Management",
-        path: "room-management",
+        path: "rooms/manage-rooms",
       },
     ],
   },
   {
-    id: "checkIn",
-    label: "Check-In",
-    path: "check-in-management",
-    icon: "IconDoorEnter",
+    id: "reviews",
+    label: "Reviews",
+    path: "reviews",
+    icon: "IconStars",
   },
   {
-    id: "checkOut",
-    label: "Check-Out",
-    path: "check-out-management",
-    icon: "IconDoorExit",
+    id: "system-logs",
+    label: "System Logs",
+    path: "system-logs",
+    icon: "IconLogs",
   },
   {
     id: "notification",
@@ -53,8 +53,5 @@ const ReceptionistNavLinks = [
     path: "settings",
     icon: "IconSettings",
   },
-  
-  
 ];
-
-export { ReceptionistNavLinks };
+export { AdminNavLinks };

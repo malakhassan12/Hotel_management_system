@@ -6,7 +6,7 @@ import { Space } from "@mantine/core";
 
 import InitialBox from "../../Components/Box/InitialBox";
 import CheckInPerformanceCards from "../../Components/Analysis/Receptionist/CheckInPerformanceCards";
-import CheckInTable from "../../Components/Table/CheckInTable";
+import CheckInTable from "../../Components/Table/Receptionist/CheckInTable";
 import { useState } from "react";
 import SearchBySelect from "../../Components/Search/SearchBySelect";
 

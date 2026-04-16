@@ -121,10 +121,15 @@ function App() {
           <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminDashBoard />} />
-              <Route path="manage-rooms" element={<ManageRooms />} />
-              <Route path="rooms" element={<BrowseRooms />} />
-              <Route path="rooms/:roomId" element={<RoomDetails />} />
+
               <Route path="manage-users" element={<ManageUsers />} />
+
+              <Route path="rooms">
+                <Route index element={<BrowseRooms />} />
+                <Route path="manage-rooms" element={<ManageRooms />} />
+                <Route path=":roomId" element={<RoomDetails />} />
+              </Route>
+
               <Route path="reviews" element={<Reviews />} />
               <Route path="system-logs" element={<SystemLogs />} />
               <Route path="settings" element={<Settings />} />

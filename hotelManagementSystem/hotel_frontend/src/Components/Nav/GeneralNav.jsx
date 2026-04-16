@@ -1,5 +1,5 @@
 // ******************************** Mantine UI ********************************
-import { AppShell, Divider, NavLink, Space } from "@mantine/core";
+import { AppShell, Divider, NavLink, ScrollArea, Space } from "@mantine/core";
 // ******************************** React-router-dom ********************************
 
 import { useNavigate, useLocation } from "react-router-dom";
@@ -8,14 +8,11 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { GetReceptionistNavIcons } from "../../Utils/Receptionist/GetReceptionistNavIcons";
 import Screens from "../../Utils/Screens/Screens";
 
-// ******************************** Constants ********************************
-
-import { ReceptionistNavLinks } from "../../Constants/ReceptionisConstants";
 // ******************************** Components ********************************
 
 import Logo from "../Logo/Logo";
 
-const GeneralNav = ({ basePath = "/receptionist" }) => {
+const GeneralNav = ({ basePath = "/receptionist", navList }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -49,10 +46,7 @@ const GeneralNav = ({ basePath = "/receptionist" }) => {
 
       const fullPath = link.path === "" ? basePath : `${basePath}/${link.path}`;
 
-      const isActive = link.end
-        ? location.pathname === fullPath
-        : location.pathname.startsWith(fullPath);
-
+const isActive = location.pathname === fullPath;
       return (
         <NavLink
           key={link.id}
@@ -70,16 +64,27 @@ const GeneralNav = ({ basePath = "/receptionist" }) => {
   };
 
   return (
-    <AppShell.Navbar p="md">
-      {isMobile && (
-        <>
-          <Logo />
-          <Space h="md" />
-          <Divider />
-        </>
-      )}
-
-      {renderNavLinks(ReceptionistNavLinks)}
+    <AppShell.Navbar
+      p="md"
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        // height: "100%",
+      }}
+    >
+      <AppShell.Section p="md">
+        {" "}
+        {isMobile && (
+          <>
+            <Logo />
+            <Space h="md" />
+            <Divider />
+          </>
+        )}
+      </AppShell.Section>
+      <AppShell.Section grow my="md" component={ScrollArea} px="md">
+        {renderNavLinks(navList)}
+      </AppShell.Section>
     </AppShell.Navbar>
   );
 };

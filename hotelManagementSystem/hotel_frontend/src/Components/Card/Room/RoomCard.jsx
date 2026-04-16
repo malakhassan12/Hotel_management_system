@@ -151,7 +151,7 @@ const RoomCard = ({ item, role = "customer" }) => {
         <Group justify="space-between" mt="sm">
           <Button
             component={Link}
-            to={`/receptionist/rooms/${item.id}`}
+            to={`${item.id}`}
             variant="light"
             color="primary"
             size="sm"

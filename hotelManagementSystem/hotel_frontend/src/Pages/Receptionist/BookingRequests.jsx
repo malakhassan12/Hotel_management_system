@@ -7,7 +7,7 @@ import { Space } from "@mantine/core";
 
 import BookingPerformanceCards from "../../Components/Analysis/Booking/BookingPerfomanceCards";
 import InitialBox from "../../Components/Box/InitialBox";
-import BookingRequestTable from "../../Components/Table/BookingRequestTable";
+import BookingRequestTable from "../../Components/Table/Receptionist/BookingRequestTable";
 import SearchBySelect from "../../Components/Search/SearchBySelect";
 
 const BookingRequests = () => {
