@@ -1,11 +1,31 @@
-import React from 'react'
+// ******************************** Mantline UI ********************************
+
+import LogsPerformanceCards from "../../Components/Analysis/Admin/LogsPerformanceCards";
+import InitialBox from "../../Components/Box/InitialBox";
+
+// ******************************** Components ********************************
+
+import { Divider, Space } from "@mantine/core";
+import LogsTable from "../../Components/Table/Admin/LogsTable";
 
 const SystemLogs = () => {
   return (
     <div>
-      
-    </div>
-  )
-}
+      <InitialBox
+        title={"System Logs"}
+        text={"Monitor all system activities and actions"}
+      />
 
-export default SystemLogs
+      <Space h={"md"} />
+
+      <LogsPerformanceCards />
+      <Space h={"md"} />
+      <Divider />
+      <Space h={"md"} />
+
+      <LogsTable />
+    </div>
+  );
+};
+
+export default SystemLogs;

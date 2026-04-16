@@ -5,6 +5,11 @@ import {
   IconDoorEnter,
   IconDoorExit,
   IconCreditCard,
+  IconBell,
+  IconSettings,
+  IconUsers,
+  IconStars,
+  IconLogs,
 } from "@tabler/icons-react";
 
 const iconMap = {
@@ -14,6 +19,11 @@ const iconMap = {
   IconDoorEnter: IconDoorEnter,
   IconDoorExit: IconDoorExit,
   IconCreditCard: IconCreditCard,
+  IconBell: IconBell,
+  IconSettings: IconSettings,
+  IconUsers: IconUsers,
+  IconStars: IconStars,
+  IconLogs: IconLogs,
 };
 
 export const GetReceptionistNavIcons = (iconName, size = 18) => {

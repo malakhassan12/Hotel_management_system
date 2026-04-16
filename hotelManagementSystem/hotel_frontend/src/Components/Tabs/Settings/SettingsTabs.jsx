@@ -18,7 +18,7 @@ const SettingsTabs = () => {
     <div>
       <Grid gutter="lg">
         {/* Sidebar */}
-        <Grid.Col span={{ base: 12, md: 3 }}>
+        <Grid.Col span={{ base: 12, lg: 3 }}>
           <Card withBorder padding="md" radius="md">
             <Stack gap="sm">
               <Tabs
@@ -52,7 +52,7 @@ const SettingsTabs = () => {
         </Grid.Col>
 
         {/* Content */}
-        <Grid.Col span={{ base: 12, md: 9 }}>
+        <Grid.Col span={{ base: 12, lg: 9 }}>
           <Card withBorder padding="xl" radius="md">
             {/* Profile Settings */}
             {activeTab === "profile" && <ProfileTab />}

@@ -10,6 +10,7 @@ import GeneralNav from "../Components/Nav/GeneralNav";
 
 import { Outlet } from "react-router-dom";
 
+import { ReceptionistNavLinks } from "../Constants/ReceptionisConstants";
 const ReceptionistLayout = () => {
   const [disabled] = useDisclosure();
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
@@ -33,7 +34,7 @@ const ReceptionistLayout = () => {
         toggleDesktop={toggleDesktop}
       />
 
-      <GeneralNav />
+      <GeneralNav navList={ReceptionistNavLinks} />
       <AppShell.Main pt="var(--app-shell-header-height)">
         <Outlet />
       </AppShell.Main>

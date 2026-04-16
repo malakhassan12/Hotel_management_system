@@ -18,9 +18,9 @@ import { useDisclosure } from "@mantine/hooks";
 import { IconEye, IconCheck, IconX, IconReceipt } from "@tabler/icons-react";
 // ******************************** Compoenents ********************************
 
-import CustomerModal from "../Modal/Customer/CustomerModal";
-import RoomModal from "../Modal/Room/RoomModal";
-import BookingModal from "../Modal/Booking/BookingModal";
+import CustomerModal from "../../Modal/Customer/CustomerModal";
+import RoomModal from "../../Modal/Room/RoomModal";
+import BookingModal from "../../Modal/Booking/BookingModal";
 
 const CheckInTable = () => {
   // Booking Modal state
@@ -308,7 +308,12 @@ const CheckInTable = () => {
         customer={selectedCustomer}
       />
 
-      <BookingModal opened={opened} close={close} booking={selectedBooking} type="check-in" />
+      <BookingModal
+        opened={opened}
+        close={close}
+        booking={selectedBooking}
+        type="check-in"
+      />
 
       <RoomModal
         opened={roomModalOpen}

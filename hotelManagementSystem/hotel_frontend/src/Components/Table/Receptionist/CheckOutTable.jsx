@@ -13,18 +13,13 @@ import {
 } from "@mantine/core";
 // ******************************** ICons ********************************
 
-import {
-  IconEye,
-  IconCheck,
-  IconX,
-  IconReceipt,
-} from "@tabler/icons-react";
+import { IconEye, IconCheck, IconX, IconReceipt } from "@tabler/icons-react";
 // ******************************** Components ********************************
 
-import CustomerModal from "../Modal/Customer/CustomerModal";
-import RoomModal from "../Modal/Room/RoomModal";
-import BookingModal from "../Modal/Booking/BookingModal";
-import InvoiceModal from "../Modal/Invoice/InvoiceModal"; 
+import CustomerModal from "../../Modal/Customer/CustomerModal";
+import RoomModal from "../../Modal/Room/RoomModal";
+import BookingModal from "../../Modal/Booking/BookingModal";
+import InvoiceModal from "../../Modal/Invoice/InvoiceModal";
 
 const CheckOutTable = () => {
   // Booking Modal state
@@ -102,11 +97,11 @@ const CheckOutTable = () => {
           total: 2660,
         },
         additionalServices: [
-          { name: "Airport Transfer", amount: 80.00 },
-          { name: "Extra Bed", amount: 40.00 },
+          { name: "Airport Transfer", amount: 80.0 },
+          { name: "Extra Bed", amount: 40.0 },
         ],
-        totalAmount: 2780.00,
-        paidAmount: 2660.00,
+        totalAmount: 2780.0,
+        paidAmount: 2660.0,
         paymentStatus: "Paid",
         invoiceDate: "2026-04-13",
       },
@@ -167,10 +162,8 @@ const CheckOutTable = () => {
           pricePerNight: 375,
           total: 1125,
         },
-        additionalServices: [
-          { name: "Airport Transfer", amount: 80.00 },
-        ],
-        totalAmount: 1205.00,
+        additionalServices: [{ name: "Airport Transfer", amount: 80.0 }],
+        totalAmount: 1205.0,
         paidAmount: 0,
         paymentStatus: "Pending",
         invoiceDate: "2026-04-10",
@@ -233,7 +226,7 @@ const CheckOutTable = () => {
           total: 180,
         },
         additionalServices: [],
-        totalAmount: 180.00,
+        totalAmount: 180.0,
         paidAmount: 0,
         paymentStatus: "Unpaid",
         invoiceDate: "2026-04-08",
@@ -363,7 +356,13 @@ const CheckOutTable = () => {
         <Badge
           size="xs"
           radius="xl"
-          color={checkout.paymentStatus === "Paid" ? "green" : checkout.paymentStatus === "Pending" ? "orange" : "red"}
+          color={
+            checkout.paymentStatus === "Paid"
+              ? "green"
+              : checkout.paymentStatus === "Pending"
+                ? "orange"
+                : "red"
+          }
           variant="light"
         >
           {checkout.paymentStatus}
