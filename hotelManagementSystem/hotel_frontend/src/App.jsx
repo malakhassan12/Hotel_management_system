@@ -5,7 +5,6 @@ import "aos/dist/aos.css";
 
 import LoadingPage from "./Pages/LoadingPage/LoadingPage";
 import ProtectedRoute from "./Routes/ProtectedRoute";
-import useAuthStore from "./Store/authStore";
 
 // Lazy Loading for Public Pages
 const NotFound = lazy(() => import("./Pages/NotFound"));
@@ -55,11 +54,11 @@ const Reviews = lazy(() => import("./Pages/Admin/Reviews"));
 const SystemLogs = lazy(() => import("./Pages/Admin/SystemLogs"));
 
 function App() {
-  // const user = {
-  //   name: "Malak",
-  //   role: "receptionist",
-  // };
-const { isAuthenticated, role } = useAuthStore();
+  const user = {
+    name: "Malak",
+    role: "Customer",
+  };
+
   useEffect(() => {
     import("aos").then((aos) => {
       aos.init({ disable: "mobile", once: true, duration: 800 });
@@ -140,7 +139,7 @@ const { isAuthenticated, role } = useAuthStore();
             </Route>
           </Route>
 
-          {/* Redirect based on user role
+          {/* Redirect based on user role */}
           <Route
             path="/"
             element={
@@ -156,24 +155,8 @@ const { isAuthenticated, role } = useAuthStore();
                 <Navigate to="/" />
               )
             }
-          /> */}
-          {/* Redirect بعد الـ Login حسب الـ role الحقيقي من الـ Store */}
-          <Route
-            path="/"
-            element={
-              isAuthenticated ? (
-                role === "Admin" ? (
-                  <Navigate to="/admin" replace />
-                ) : role === "Receptionist" ? (
-                  <Navigate to="/receptionist" replace />
-                ) : (
-                  <Navigate to="/customer" replace />
-                )
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
+          /> 
+     
 
           {/* 404 Not Found */}
           <Route path="*" element={<NotFound />} />

@@ -129,7 +129,7 @@ const RoomCards = () => {
             data-aos-duration="700"
             data-aos-delay={index * 100}
           >
-            <RoomCard item={room} role="receptionist" />
+            <RoomCard item={room} role="Customer" />
           </div>
         ))}
       </SimpleGrid>

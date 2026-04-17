@@ -5,7 +5,7 @@ import { Outlet } from "react-router-dom";
 import GeneralHeader from "../Components/Header/GeneralHeader";
 import GeneralNav from "../Components/Nav/GeneralNav";
 import { CustomerNavLinks } from "../Constants/CustomerConstants";
-import { GetCustomerNavIcons } from "../Utils/Customer/GetCustomerNavIcons";
+
 const CustomerLayout = () => {
   const [disabled] = useDisclosure();
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
