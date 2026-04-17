@@ -5,6 +5,7 @@ import "aos/dist/aos.css";
 
 import LoadingPage from "./Pages/LoadingPage/LoadingPage";
 import ProtectedRoute from "./Routes/ProtectedRoute";
+import useAuthStore from "./Store/authStore";
 
 // Lazy Loading for Public Pages
 const NotFound = lazy(() => import("./Pages/NotFound"));
@@ -14,6 +15,7 @@ const Register = lazy(() => import("./Pages/Auth/Register/Register"));
 const BrowseRooms = lazy(() => import("./Pages/Room/BrowseRooms"));
 const Settings = lazy(() => import("./Pages/Settings"));
 const Notifications = lazy(() => import("./Pages/Notifications"));
+const Logout=lazy(()=>import("./Pages/Auth/Logout/Logout"))
 
 // Layout Pages
 const CustomerLayout = lazy(() => import("./Layout/CustomerLayout"));
@@ -53,11 +55,11 @@ const Reviews = lazy(() => import("./Pages/Admin/Reviews"));
 const SystemLogs = lazy(() => import("./Pages/Admin/SystemLogs"));
 
 function App() {
-  const user = {
-    name: "Malak",
-    role: "receptionist",
-  };
-
+  // const user = {
+  //   name: "Malak",
+  //   role: "receptionist",
+  // };
+const { isAuthenticated, role } = useAuthStore();
   useEffect(() => {
     import("aos").then((aos) => {
       aos.init({ disable: "mobile", once: true, duration: 800 });
@@ -72,10 +74,11 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/logout" element={<Logout />} />
 
           {/* ===================================== Customer ==================================  */}
 
-          <Route element={<ProtectedRoute allowedRoles={["customer"]} />}>
+          <Route element={<ProtectedRoute allowedRoles={["Customer"]} />}>
             <Route path="/customer" element={<CustomerLayout />}>
               <Route index element={<BrowseRooms />} />
               <Route path="rooms/:roomId" element={<RoomDetails />} />
@@ -91,7 +94,7 @@ function App() {
 
           {/* ===================================== Receptionist ==================================  */}
 
-          <Route element={<ProtectedRoute allowedRoles={["receptionist"]} />}>
+          <Route element={<ProtectedRoute allowedRoles={["Receptionist"]} />}>
             <Route path="/receptionist" element={<ReceptionistLayout />}>
               <Route index element={<ReceptionistDashBoard />} />
               <Route path="booking-requests" element={<BookingRequests />} />
@@ -118,7 +121,7 @@ function App() {
 
           {/* ===================================== Admin ==================================  */}
 
-          <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+          <Route element={<ProtectedRoute allowedRoles={["Admin"]} />}>
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminDashBoard />} />
 
@@ -137,7 +140,7 @@ function App() {
             </Route>
           </Route>
 
-          {/* Redirect based on user role */}
+          {/* Redirect based on user role
           <Route
             path="/"
             element={
@@ -153,10 +156,28 @@ function App() {
                 <Navigate to="/" />
               )
             }
+          /> */}
+          {/* Redirect بعد الـ Login حسب الـ role الحقيقي من الـ Store */}
+          <Route
+            path="/"
+            element={
+              isAuthenticated ? (
+                role === "Admin" ? (
+                  <Navigate to="/admin" replace />
+                ) : role === "Receptionist" ? (
+                  <Navigate to="/receptionist" replace />
+                ) : (
+                  <Navigate to="/customer" replace />
+                )
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
           />
 
           {/* 404 Not Found */}
           <Route path="*" element={<NotFound />} />
+          
         </Routes>
       </Suspense>
     </>

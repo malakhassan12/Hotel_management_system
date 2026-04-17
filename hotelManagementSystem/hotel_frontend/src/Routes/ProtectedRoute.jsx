@@ -1,11 +1,11 @@
 import { Navigate, Outlet } from "react-router-dom";
-
 const ProtectedRoute = ({ allowedRoles }) => {
   const user = {
     name: "Malak",
     role: "admin",
   };
 
+ 
   if (!user) {
     return <Navigate to="/login" replace />;
   }
@@ -17,6 +17,7 @@ const ProtectedRoute = ({ allowedRoles }) => {
     if (user.role === "customer") return <Navigate to="/customer" replace />;
     return <Navigate to="/login" replace />;
   }
+
 
   return <Outlet />;
 };
