@@ -1,6 +1,10 @@
-import React from 'react';
+import React from "react";
 import { Card, Text, Group, ThemeIcon } from "@mantine/core";
-import { IconTrendingUp, IconTrendingDown, IconMinus } from "@tabler/icons-react";
+import {
+  IconTrendingUp,
+  IconTrendingDown,
+  IconMinus,
+} from "@tabler/icons-react";
 
 const BookingCard = ({ item }) => {
   const { title, value, icon: Icon, color, trend } = item;
@@ -28,7 +32,6 @@ const BookingCard = ({ item }) => {
 
   return (
     <Card
-     
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = "translateY(-4px)";
         e.currentTarget.style.boxShadow = "var(--mantine-shadow-lg)";

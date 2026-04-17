@@ -79,7 +79,7 @@ const GeneralHeader = ({
 
           {/* Notifications Button with Indicator */}
           <UnstyledButton
-             component={Link}
+            component={Link}
             to="notifications"
             style={{
               padding: "8px",
@@ -94,9 +94,8 @@ const GeneralHeader = ({
                   "light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-6))",
               },
             }}
-
           >
-            <Indicator color="red" size={10} processing offset={5} withBorder >
+            <Indicator color="red" size={10} processing offset={5} withBorder>
               <IconBell
                 size={20}
                 style={{

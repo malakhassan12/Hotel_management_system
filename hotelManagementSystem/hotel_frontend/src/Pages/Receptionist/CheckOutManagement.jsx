@@ -7,7 +7,7 @@ import { Space } from "@mantine/core";
 
 import SearchBySelect from "../../Components/Search/SearchBySelect";
 import InitialBox from "../../Components/Box/InitialBox";
-import CheckOutTable from "../../Components/Table/CheckOutTable";
+import CheckOutTable from "../../Components/Table/Receptionist/CheckOutTable";
 
 const CheckOutManagement = () => {
   const [statusFilter, setStatusFilter] = useState("all");
