@@ -1,6 +1,4 @@
 import { Navigate, Outlet } from "react-router-dom";
-import useAuthStore from "../Store/authStore";
-
 const ProtectedRoute = ({ allowedRoles }) => {
   const user = {
     name: "Malak",
@@ -8,7 +6,7 @@ const ProtectedRoute = ({ allowedRoles }) => {
   };
 
  
-  if (!isAuthenticated) {
+  if (!user) {
     return <Navigate to="/login" replace />;
   }
 
