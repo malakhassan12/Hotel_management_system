@@ -14,17 +14,17 @@ const Login = () => {
       role: "Customer",
     },
     validate: zod4Resolver(loginSchema),
-    validateInputOnBlur: true,        // تحقق عند الخروج من الحقل
-    validateInputOnChange: false,     // لو عاوزة تحقق فوري غيريها لـ true
+    validateInputOnBlur: true,        
+    validateInputOnChange: false,   
   });
 
   const handleSubmit = async (values) => {
-    setServerError("");               // مسح أي error سابق من السيرفر
+    setServerError("");               
     const result = await loginUser(values);
     
-    // لو الـ login فشل (مثلاً credentials غلط)، نرجع الـ form زي ما هو
+    
     if (!result.success) {
-      form.setFieldError("email", " ");   // عشان نبرز الحقل
+      form.setFieldError("email", " ");   
       form.setFieldError("password", " ");
     }
   };

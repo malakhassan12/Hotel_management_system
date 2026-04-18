@@ -19,21 +19,10 @@ const CustomerNavLinks = [
     icon: "IconHeart",
   },
   {
-    id: "bookingActions",
-    label: "Booking Actions",
-    icon: "IconClipboardList",
-    children: [
-      {
-        id: "checkIn",
-        label: "Check-In",
-        path: "check-in/:roomId",
-      },
-      {
-        id: "checkOut",
-        label: "Check-Out",
-        path: "check-out/:bookingId",
-      },
-    ],
+    id: "reviews",
+    label: "Reviews",
+    path: "reviews",
+    icon: "IconStars",
   },
   {
     id: "settings",

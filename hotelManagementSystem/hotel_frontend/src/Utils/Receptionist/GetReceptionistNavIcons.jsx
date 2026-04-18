@@ -10,6 +10,7 @@ import {
   IconUsers,
   IconStars,
   IconLogs,
+  IconHeart,
 } from "@tabler/icons-react";
 
 const iconMap = {
@@ -24,6 +25,7 @@ const iconMap = {
   IconUsers: IconUsers,
   IconStars: IconStars,
   IconLogs: IconLogs,
+  IconHeart: IconHeart,
 };
 
 export const GetReceptionistNavIcons = (iconName, size = 18) => {

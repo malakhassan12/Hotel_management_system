@@ -24,13 +24,22 @@ import {
   IconTools,
 } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
-
+import useFavoritesStore from "../../../Store/favoritesStore";
+import { useNavigate,useLocation } from "react-router-dom"; 
 const RoomCard = ({ item, role = "customer" }) => {
-  const [liked, setLiked] = useState(false);
+  
   const [currentStatus, setCurrentStatus] = useState(
     item.status || "Available",
   );
 
+const navigate = useNavigate();
+const {
+  addToFavorites,
+  removeFromFavorites,
+  isFavorite,
+} = useFavoritesStore();
+
+const liked = isFavorite(item.id);
   const defaultImage =
     "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=400&h=250&fit=crop";
 
@@ -44,9 +53,11 @@ const RoomCard = ({ item, role = "customer" }) => {
 
   const handleStatusChange = (newStatus) => {
     setCurrentStatus(newStatus);
-    // هنا تقدر تضيف استدعاء API لتحديث الحالة
-  };
 
+  };
+const location = useLocation();
+
+const Favorite = location.pathname.endsWith("/favourites");
   return (
     <Card
       onMouseEnter={(e) => {
@@ -151,7 +162,7 @@ const RoomCard = ({ item, role = "customer" }) => {
         <Group justify="space-between" mt="sm">
           <Button
             component={Link}
-            to={`${item.id}`}
+            to= {Favorite ? `/customer/${item.id}` : `${item.id}`}
             variant="light"
             color="primary"
             size="sm"
@@ -201,7 +212,14 @@ const RoomCard = ({ item, role = "customer" }) => {
                 color="red"
                 size="md"
                 radius="xl"
-                onClick={() => setLiked(!liked)}
+               onClick={() => {
+  if (liked) {
+    removeFromFavorites(item.id);
+  } else {
+    addToFavorites(item);
+  
+  }
+}}
               >
                 {liked ? (
                   <IconHeartFilled size={18} />
@@ -209,9 +227,16 @@ const RoomCard = ({ item, role = "customer" }) => {
                   <IconHeart size={18} />
                 )}
               </ActionIcon>
-              <Button variant="filled" color="primary" size="sm">
-                Book Now
-              </Button>
+              <Button 
+  onClick={() => navigate(`/customer/book-room/${item.id}`)}
+  variant="filled"
+  size="sm"
+
+  color="primary"
+>
+  Book Now
+</Button>
+              
             </>
           )}
         </Group>

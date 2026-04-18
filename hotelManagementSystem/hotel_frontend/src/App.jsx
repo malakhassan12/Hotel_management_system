@@ -5,7 +5,6 @@ import "aos/dist/aos.css";
 
 import LoadingPage from "./Pages/LoadingPage/LoadingPage";
 import ProtectedRoute from "./Routes/ProtectedRoute";
-import useAuthStore from "./Store/authStore";
 
 // Lazy Loading for Public Pages
 const NotFound = lazy(() => import("./Pages/NotFound"));
@@ -29,7 +28,7 @@ const MyBookings = lazy(() => import("./Pages/Customer/MyBookings"));
 const RoomDetails = lazy(() => import("./Pages/Room/RoomDetails"));
 const CheckOut = lazy(() => import("./Pages/Customer/CheckOut"));
 const CheckIn = lazy(() => import("./Pages/Customer/CheckIn"));
-
+const RoomReviews = lazy(() => import("./Pages/Customer/RoomReviews"));
 // Receptionist Pages
 const ReceptionistDashBoard = lazy(
   () => import("./Pages/Receptionist/ReceptionistDashBoard"),
@@ -55,11 +54,11 @@ const Reviews = lazy(() => import("./Pages/Admin/Reviews"));
 const SystemLogs = lazy(() => import("./Pages/Admin/SystemLogs"));
 
 function App() {
-  // const user = {
-  //   name: "Malak",
-  //   role: "receptionist",
-  // };
-const { isAuthenticated, role } = useAuthStore();
+  const user = {
+    name: "Malak",
+    role: "Customer",
+  };
+
   useEffect(() => {
     import("aos").then((aos) => {
       aos.init({ disable: "mobile", once: true, duration: 800 });
@@ -81,7 +80,9 @@ const { isAuthenticated, role } = useAuthStore();
           <Route element={<ProtectedRoute allowedRoles={["Customer"]} />}>
             <Route path="/customer" element={<CustomerLayout />}>
               <Route index element={<BrowseRooms />} />
-              <Route path="rooms/:roomId" element={<RoomDetails />} />
+             <Route path="reviews" element={<RoomReviews />} />
+              {/* <Route path="rooms/:roomId" element={<RoomDetails />} /> */}
+              <Route path=":roomId" element={<RoomDetails/>}/>
               <Route path="book-room/:roomId" element={<BookRoom />} />
               <Route path="favourites" element={<Favourites />} />
               <Route path="my-bookings" element={<MyBookings />} />
@@ -140,7 +141,7 @@ const { isAuthenticated, role } = useAuthStore();
             </Route>
           </Route>
 
-          {/* Redirect based on user role
+          {/* Redirect based on user role */}
           <Route
             path="/"
             element={
@@ -156,24 +157,8 @@ const { isAuthenticated, role } = useAuthStore();
                 <Navigate to="/" />
               )
             }
-          /> */}
-          {/* Redirect بعد الـ Login حسب الـ role الحقيقي من الـ Store */}
-          <Route
-            path="/"
-            element={
-              isAuthenticated ? (
-                role === "Admin" ? (
-                  <Navigate to="/admin" replace />
-                ) : role === "Receptionist" ? (
-                  <Navigate to="/receptionist" replace />
-                ) : (
-                  <Navigate to="/customer" replace />
-                )
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
+          /> 
+     
 
           {/* 404 Not Found */}
           <Route path="*" element={<NotFound />} />
