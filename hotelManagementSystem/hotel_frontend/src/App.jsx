@@ -28,7 +28,7 @@ const MyBookings = lazy(() => import("./Pages/Customer/MyBookings"));
 const RoomDetails = lazy(() => import("./Pages/Room/RoomDetails"));
 const CheckOut = lazy(() => import("./Pages/Customer/CheckOut"));
 const CheckIn = lazy(() => import("./Pages/Customer/CheckIn"));
-
+const RoomReviews = lazy(() => import("./Pages/Customer/RoomReviews"));
 // Receptionist Pages
 const ReceptionistDashBoard = lazy(
   () => import("./Pages/Receptionist/ReceptionistDashBoard"),
@@ -80,7 +80,9 @@ function App() {
           <Route element={<ProtectedRoute allowedRoles={["Customer"]} />}>
             <Route path="/customer" element={<CustomerLayout />}>
               <Route index element={<BrowseRooms />} />
-              <Route path="rooms/:roomId" element={<RoomDetails />} />
+             <Route path="reviews" element={<RoomReviews />} />
+              {/* <Route path="rooms/:roomId" element={<RoomDetails />} /> */}
+              <Route path=":roomId" element={<RoomDetails/>}/>
               <Route path="book-room/:roomId" element={<BookRoom />} />
               <Route path="favourites" element={<Favourites />} />
               <Route path="my-bookings" element={<MyBookings />} />

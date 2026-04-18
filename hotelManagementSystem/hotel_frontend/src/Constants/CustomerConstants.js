@@ -19,6 +19,12 @@ const CustomerNavLinks = [
     icon: "IconHeart",
   },
   {
+    id: "reviews",
+    label: "Reviews",
+    path: "reviews",
+    icon: "IconStars",
+  },
+  {
     id: "settings",
     label: "Settings",
     path: "settings",

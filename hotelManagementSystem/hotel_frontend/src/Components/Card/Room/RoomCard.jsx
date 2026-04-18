@@ -25,14 +25,14 @@ import {
 } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
 import useFavoritesStore from "../../../Store/favoritesStore";
-
+import { useNavigate,useLocation } from "react-router-dom"; 
 const RoomCard = ({ item, role = "customer" }) => {
-  // const [liked, setLiked] = useState(false);
+  
   const [currentStatus, setCurrentStatus] = useState(
     item.status || "Available",
   );
 
-
+const navigate = useNavigate();
 const {
   addToFavorites,
   removeFromFavorites,
@@ -55,7 +55,9 @@ const liked = isFavorite(item.id);
     setCurrentStatus(newStatus);
 
   };
-console.log(item);
+const location = useLocation();
+
+const Favorite = location.pathname.endsWith("/favourites");
   return (
     <Card
       onMouseEnter={(e) => {
@@ -160,7 +162,7 @@ console.log(item);
         <Group justify="space-between" mt="sm">
           <Button
             component={Link}
-            to={`${item.id}`}
+            to= {Favorite ? `/customer/${item.id}` : `${item.id}`}
             variant="light"
             color="primary"
             size="sm"
@@ -225,10 +227,16 @@ console.log(item);
                   <IconHeart size={18} />
                 )}
               </ActionIcon>
-              <Button component={Link} variant="filled" color="primary" size="sm" to={`/customer/book-room/${item.id}`}>
-                
-                Book Now
-              </Button>
+              <Button 
+  onClick={() => navigate(`/customer/book-room/${item.id}`)}
+  variant="filled"
+  size="sm"
+
+  color="primary"
+>
+  Book Now
+</Button>
+              
             </>
           )}
         </Group>
