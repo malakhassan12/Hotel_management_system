@@ -87,7 +87,8 @@ function App() {
               <Route path="favourites" element={<Favourites />} />
               <Route path="my-bookings" element={<MyBookings />} />
               <Route path="check-out/:bookingId" element={<CheckOut />} />
-              <Route path="check-in/:roomId" element={<CheckIn />} />
+              <Route path="check-in/:bookingId" element={<CheckIn />} />
+              {/* <Route path="check-in/:roomId" element={<CheckIn />} /> */}
               <Route path="settings" element={<Settings />} />
               <Route path="notifications" element={<Notifications />} />
             </Route>
