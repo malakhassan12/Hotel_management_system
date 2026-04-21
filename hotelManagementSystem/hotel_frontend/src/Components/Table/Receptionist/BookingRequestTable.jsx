@@ -20,7 +20,7 @@ import {
 } from "@tabler/icons-react";
 // ******************************** Components ********************************
 
-import BookingModal from "../Modal/Booking/BookingModal";
+import BookingModal from "../../Modal/Booking/BookingModal";
 import { useDisclosure } from "@mantine/hooks";
 
 const BookingRequestTable = () => {

@@ -26,7 +26,7 @@ const BookRoom = lazy(() => import("./Pages/Customer/BookRoom"));
 const Favourites = lazy(() => import("./Pages/Customer/Favourites"));
 const MyBookings = lazy(() => import("./Pages/Customer/MyBookings"));
 const RoomDetails = lazy(() => import("./Pages/Room/RoomDetails"));
-const CheckOut = lazy(() => import("./Pages/Customer/CheckOut"));
+// const CheckOut = lazy(() => import("./Pages/Customer/CheckOut"));
 const CheckIn = lazy(() => import("./Pages/Customer/CheckIn"));
 const RoomReviews = lazy(() => import("./Pages/Customer/RoomReviews"));
 // Receptionist Pages
@@ -56,7 +56,7 @@ const SystemLogs = lazy(() => import("./Pages/Admin/SystemLogs"));
 function App() {
   const user = {
     name: "Malak",
-    role: "Customer",
+    role: "Receptionist",
   };
 
   useEffect(() => {
@@ -86,7 +86,7 @@ function App() {
               <Route path="book-room/:roomId" element={<BookRoom />} />
               <Route path="favourites" element={<Favourites />} />
               <Route path="my-bookings" element={<MyBookings />} />
-              <Route path="check-out/:bookingId" element={<CheckOut />} />
+              {/* <Route path="check-out/:bookingId" element={<CheckOut />} /> */}
               <Route path="check-in/:bookingId" element={<CheckIn />} />
               {/* <Route path="check-in/:roomId" element={<CheckIn />} /> */}
               <Route path="settings" element={<Settings />} />

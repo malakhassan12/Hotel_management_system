@@ -71,7 +71,7 @@ export const useBook = () => {
     checkOut: formData.checkOutDate,
     guests: formData.guests,
     total: totalPrice,
-    status: "Pending",
+    status: "confirmed",
     paymentMethod: formData.paymentMethod,
     createdAt: new Date().toISOString(),
   };
