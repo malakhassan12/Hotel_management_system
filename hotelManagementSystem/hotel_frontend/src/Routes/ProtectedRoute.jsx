@@ -2,7 +2,7 @@ import { Navigate, Outlet } from "react-router-dom";
 const ProtectedRoute = ({ allowedRoles }) => {
   const user = {
     name: "Malak",
-    role: "Customer",
+    role: "Receptionist",
   };
 
  

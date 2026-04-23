@@ -56,7 +56,7 @@ const SystemLogs = lazy(() => import("./Pages/Admin/SystemLogs"));
 function App() {
   const user = {
     name: "Malak",
-    role: "Customer",
+    role: "Receptionist",
   };
 
   useEffect(() => {
