@@ -18,17 +18,21 @@ import {
 } from "@mantine/core";
 // ******************************** Components ********************************
 
-const StartedHeader = lazy(() => import("../../Components/Header/StartedHeader"));
+const StartedHeader = lazy(
+  () => import("../../Components/Header/StartedHeader"),
+);
 const HomeCard = lazy(() => import("../../Components/Card/HomeCard"));
 const Footer = lazy(() => import("../../Components/Footer/Footer"));
 
 // ******************************** Constants ********************************
 
 import { cardsData } from "../../Constants/HomeConstants";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [opened, { toggle }] = useDisclosure();
 
+  const navigate = useNavigate();
   return (
     <AppShell
       header={{ height: 60 }}
@@ -97,6 +101,7 @@ const Home = () => {
                       transform: "translateY(-2px)",
                     },
                   }}
+                  onClick={() => navigate("/login")}
                 >
                   Get Started →
                 </Button>

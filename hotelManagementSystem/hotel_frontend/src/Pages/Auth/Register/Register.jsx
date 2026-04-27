@@ -1,98 +1,316 @@
 import { useForm } from "@mantine/form";
-import { zod4Resolver } from "mantine-form-zod-resolver";
-import { TextInput, PasswordInput, Select, Button, Stack, Group, Text, Anchor } from "@mantine/core";
-
-import { registerSchema } from "../../../Validators/authValidators";
+import {
+  TextInput,
+  PasswordInput,
+  Select,
+  Button,
+  Stack,
+  Group,
+  Text,
+  Anchor,
+  Divider,
+  Box,
+  Alert,
+  Paper,
+  Title,
+  Container,
+} from "@mantine/core";
 import { useRegister } from "../../../Hooks/useRegister";
-import AuthCard from "../../../Components/Card/Auth/AuthCard";
-
 
 const Register = () => {
   const { registerUser, loading, serverError, setServerError } = useRegister();
 
   const form = useForm({
     initialValues: {
-      fullName: "",
+      username: "",
       email: "",
       password: "",
       confirmPassword: "",
       role: "Customer",
     },
-    validate: zod4Resolver(registerSchema),     // ← مهم جداً
+
+    validate: {
+      username: (value) => {
+        if (!value || value.trim() === "") return "Username is required";
+        if (value.length < 3) return "Username must be at least 3 characters";
+        if (value.length > 50)
+          return "Username must be less than 50 characters";
+        // ✅ Allow spaces, letters (English/Arabic), numbers
+        if (!/^[a-zA-Z\u0600-\u06FF0-9\s]{3,50}$/.test(value)) {
+          return "Username can contain letters, numbers, and spaces only";
+        }
+        return null;
+      },
+
+      email: (value) => {
+        if (!value) return "Email is required";
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value)) {
+          return "Please enter a valid email address (e.g., name@example.com)";
+        }
+        return null;
+      },
+
+      password: (value) => {
+        if (!value) return "Password is required";
+        if (value.length < 8) return "Password must be at least 8 characters";
+        if (!/[A-Z]/.test(value))
+          return "Password must contain at least one uppercase letter";
+        if (!/[a-z]/.test(value))
+          return "Password must contain at least one lowercase letter";
+        if (!/[0-9]/.test(value))
+          return "Password must contain at least one number";
+        // ✅ Allow special characters
+        if (!/[@$!%*?&#]/.test(value)) {
+          return "Password must contain at least one special character (@$!%*?&#)";
+        }
+        return null;
+      },
+
+      confirmPassword: (value, values) => {
+        if (!value) return "Please confirm your password";
+        if (value !== values.password) return "Passwords do not match";
+        return null;
+      },
+
+      role: (value) => {
+        if (!value) return "Please select a role";
+        return null;
+      },
+    },
+
     validateInputOnBlur: true,
+    validateInputOnChange: true,
   });
 
   const handleSubmit = async (values) => {
+    console.log("Form values:", values);
+
+    // Manual validation before submit
+    const errors = form.validate();
+    if (errors.hasErrors) {
+      console.log("Validation errors:", errors.errors);
+      setServerError("Please fix the errors above before continuing");
+      return;
+    }
+
     setServerError("");
-    await registerUser(values);
+
+    const { success } = await registerUser(values);
+    if (success) {
+      form.reset();
+    }
   };
 
+  // Password strength calculation
+  const getPasswordStrength = (password) => {
+    let strength = 0;
+    if (password.length >= 8) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[a-z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[@$!%*?&#]/.test(password)) strength++;
+    return strength;
+  };
+
+  const passwordStrength = getPasswordStrength(form.values.password);
+  const strengthText =
+    passwordStrength === 0
+      ? "Very Weak"
+      : passwordStrength === 1
+        ? "Weak"
+        : passwordStrength === 2
+          ? "Fair"
+          : passwordStrength === 3
+            ? "Good"
+            : "Strong";
+
+  const strengthColor =
+    passwordStrength === 0
+      ? "#fa5252"
+      : passwordStrength === 1
+        ? "#ff922b"
+        : passwordStrength === 2
+          ? "#fcc419"
+          : passwordStrength === 3
+            ? "#69db7e"
+            : "#51cf66";
+
   return (
-    <AuthCard title="Create Account" subtitle="Join our hotel management system">
-      <form onSubmit={form.onSubmit(handleSubmit)}>
-        <Stack mt="xl">
-          <TextInput
-            label="Full Name"
-            placeholder="Enter your full name"
-            {...form.getInputProps("fullName")}
-          />
-
-          <TextInput
-            label="Email"
-            placeholder="Enter your email"
-            {...form.getInputProps("email")}
-          />
-
-          <PasswordInput
-            label="Password"
-            placeholder="Enter your password"
-            {...form.getInputProps("password")}
-          />
-
-          <PasswordInput
-            label="Confirm Password"
-            placeholder="Confirm your password"
-            {...form.getInputProps("confirmPassword")}
-          />
-
-          <Select
-            label="Role"
-            data={[
-              { value: "Customer", label: "Customer" },
-              { value: "Receptionist", label: "Receptionist" },
-              { value: "Admin", label: "Admin" },
-            ]}
-            {...form.getInputProps("role")}
-          />
-
-          {serverError && (
-            <Text c="red.6" size="sm" ta="center" fw={500}>
-              {serverError}
-            </Text>
-          )}
-
-          <Button
-            type="submit"
-            fullWidth
-            size="lg"
-            radius="md"
-            color="dark"
-            loading={loading}
-            mt="md"
-            rightSection="→"
-          >
-            Sign Up
-          </Button>
+    <Container size={480} my={40}>
+      <Paper
+        radius="lg"
+        p={{ base: "xl", sm: "xl", md: "xl" }}
+        withBorder
+        shadow="sm"
+      >
+        {/* Header */}
+        <Stack align="center" gap="xs" mb="xl">
+          <Title order={2} size="h2" ta="center">
+            Create Account
+          </Title>
+          <Text size="sm" c="dimmed" ta="center">
+            Join our hotel management system
+          </Text>
         </Stack>
-      </form>
 
-      <Group justify="center" mt="xl">
-        <Text size="sm">Already have an account?</Text>
-        <Anchor component="a" href="/login" fw={600}>
-          Sign in
-        </Anchor>
-      </Group>
-    </AuthCard>
+        {/* Form */}
+        <form onSubmit={form.onSubmit(handleSubmit)}>
+          <Stack gap="md">
+            {/* Username */}
+            <TextInput
+              label="Username"
+              placeholder="Malak Hassan"
+              size="md"
+              radius="md"
+              description="Can contain letters, numbers, and spaces"
+              {...form.getInputProps("username")}
+            />
+
+            {/* Email */}
+            <TextInput
+              label="Email"
+              placeholder="malak444hassan@gmail.com"
+              size="md"
+              radius="md"
+              {...form.getInputProps("email")}
+            />
+
+            {/* Password */}
+            <PasswordInput
+              label="Password"
+              placeholder="Moka@1234"
+              size="md"
+              radius="md"
+              description="8+ chars with uppercase, lowercase, number & special character"
+              {...form.getInputProps("password")}
+            />
+
+            {/* Password Strength */}
+            {form.values.password && !form.errors.password && (
+              <Box>
+                <div
+                  style={{
+                    height: 4,
+                    background: "#e9ecef",
+                    borderRadius: 2,
+                    overflow: "hidden",
+                    marginBottom: 8,
+                  }}
+                >
+                  <div
+                    style={{
+                      width: `${(passwordStrength / 5) * 100}%`,
+                      height: "100%",
+                      background: strengthColor,
+                      transition: "width 0.3s ease",
+                    }}
+                  />
+                </div>
+                <Text size="xs" c={strengthColor}>
+                  Password strength: {strengthText}
+                </Text>
+              </Box>
+            )}
+
+            {/* Confirm Password */}
+            <PasswordInput
+              label="Confirm Password"
+              placeholder="Confirm your password"
+              size="md"
+              radius="md"
+              {...form.getInputProps("confirmPassword")}
+            />
+
+            {/* Role Selection */}
+            <Select
+              label="Account Type"
+              placeholder="Select your role"
+              size="md"
+              radius="md"
+              data={[
+                {
+                  value: "CUSTOME",
+                  label: "Customer ",
+                },
+                {
+                  value: "RECEPTIONIST",
+                  label: "Receptionist ",
+                },
+                { value: "Admin", label: "Admin " },
+              ]}
+              {...form.getInputProps("role")}
+            />
+
+            {/* Error Display - More Specific */}
+            {serverError && (
+              <Alert
+                color="red"
+                title="Registration Failed"
+                withCloseButton
+                onClose={() => setServerError("")}
+                radius="md"
+              >
+                {serverError}
+                {form.errors.username && (
+                  <Text size="sm" mt="xs">
+                    • {form.errors.username}
+                  </Text>
+                )}
+                {form.errors.email && (
+                  <Text size="sm" mt="xs">
+                    • {form.errors.email}
+                  </Text>
+                )}
+                {form.errors.password && (
+                  <Text size="sm" mt="xs">
+                    • {form.errors.password}
+                  </Text>
+                )}
+                {form.errors.confirmPassword && (
+                  <Text size="sm" mt="xs">
+                    • {form.errors.confirmPassword}
+                  </Text>
+                )}
+              </Alert>
+            )}
+
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              fullWidth
+              size="lg"
+              radius="md"
+              bg="dark"
+              c="white"
+              loading={loading}
+              mt="md"
+              style={{ height: 44 }}
+            >
+              {loading ? "Creating account..." : "Sign Up"}
+            </Button>
+          </Stack>
+        </form>
+
+        {/* Divider */}
+        <Divider my="xl" label="or" labelPosition="center" />
+
+        {/* Login Link */}
+        <Group justify="center">
+          <Text size="sm" c="dimmed">
+            Already have an account?
+          </Text>
+          <Anchor href="/login" size="sm" fw={600} c="dark">
+            Sign In
+          </Anchor>
+        </Group>
+
+        {/* Terms */}
+        <Text size="xs" ta="center" c="dimmed" mt="lg">
+          By signing up, you agree to our Terms of Service and Privacy Policy
+        </Text>
+      </Paper>
+    </Container>
   );
 };
 
