@@ -9,6 +9,7 @@ export const useRegister = () => {
   const registerUser = async (values) => {
     setLoading(true);
     setServerError("");
+    console.log(values ,"From use ")
 
     try {
       const res = await authClient.post("/register", values);

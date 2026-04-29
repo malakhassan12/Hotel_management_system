@@ -4,6 +4,7 @@ import { notifications } from "@mantine/notifications";
 import useAuthStore from "../Store/authStore";
 import authClient from "../Api/Client/Auth/Auth.client";
 import { jwtDecode } from "jwt-decode";
+import { roles } from "../Constants/ConstantsFromBack";
 
 export const useLogin = () => {
   const navigate = useNavigate();
@@ -19,12 +20,16 @@ export const useLogin = () => {
       const res = await authClient.post("/login", values);
       const { token } = res.data;
 
+      console.log(res);
+
       const decoded = jwtDecode(token);
 
       const role = decoded.role;
       const userEmail = decoded.sub;
 
       const userId = decoded.userId;
+
+      console.log(role, userEmail, userId);
 
       login(token, role, { email: userEmail, userId: userId });
 
@@ -34,10 +39,14 @@ export const useLogin = () => {
         color: "green",
       });
 
-      // 4. التوجيه حسب الصلاحية
-      if (role === "ADMIN") navigate("/admin");
-      if (role === "RECEPTIONIST") navigate("/receptionist");
-      if (role === "CUSTOMER") navigate("/customer");
+      // // 4. التوجيه حسب الصلاحية
+      if (role === roles[0]) navigate("/admin");
+      if (role === roles[2]) navigate("/receptionist");
+      if (role === roles[1]) navigate("/customer");
+
+      // console.log(localStorage.getItem("token"));
+      // console.log(localStorage.getItem("role"));
+      // console.log(localStorage.getItem("user"));
 
       return { success: true };
     } catch (err) {
