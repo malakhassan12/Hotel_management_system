@@ -16,6 +16,7 @@ import {
   Container,
 } from "@mantine/core";
 import { useRegister } from "../../../Hooks/useRegister";
+import { roles } from "../../../Constants/ConstantsFromBack";
 
 const Register = () => {
   const { registerUser, loading, serverError, setServerError } = useRegister();
@@ -25,8 +26,8 @@ const Register = () => {
       username: "",
       email: "",
       password: "",
-      confirmPassword: "",
-      role: "Customer",
+      Confirmpassword: "",
+      role: roles[1],
     },
 
     validate: {
@@ -61,13 +62,13 @@ const Register = () => {
         if (!/[0-9]/.test(value))
           return "Password must contain at least one number";
         // ✅ Allow special characters
-        if (!/[@$!%*?&#]/.test(value)) {
-          return "Password must contain at least one special character (@$!%*?&#)";
-        }
+        // if (!/[@$!%*?&#]/.test(value)) {
+        //   return "Password must contain at least one special character (@$!%*?&#)";
+        // }
         return null;
       },
 
-      confirmPassword: (value, values) => {
+      Confirmpassword: (value, values) => {
         if (!value) return "Please confirm your password";
         if (value !== values.password) return "Passwords do not match";
         return null;
@@ -109,7 +110,7 @@ const Register = () => {
     if (/[A-Z]/.test(password)) strength++;
     if (/[a-z]/.test(password)) strength++;
     if (/[0-9]/.test(password)) strength++;
-    if (/[@$!%*?&#]/.test(password)) strength++;
+    // if (/[@$!%*?&#]/.test(password)) strength++;
     return strength;
   };
 
@@ -121,9 +122,9 @@ const Register = () => {
         ? "Weak"
         : passwordStrength === 2
           ? "Fair"
-          : passwordStrength === 3
-            ? "Good"
-            : "Strong";
+          : // : passwordStrength === 3
+            //   ? "Good"
+            "Strong";
 
   const strengthColor =
     passwordStrength === 0
@@ -160,7 +161,6 @@ const Register = () => {
             {/* Username */}
             <TextInput
               label="Username"
-              placeholder="Malak Hassan"
               size="md"
               radius="md"
               description="Can contain letters, numbers, and spaces"
@@ -170,7 +170,6 @@ const Register = () => {
             {/* Email */}
             <TextInput
               label="Email"
-              placeholder="malak444hassan@gmail.com"
               size="md"
               radius="md"
               {...form.getInputProps("email")}
@@ -179,7 +178,6 @@ const Register = () => {
             {/* Password */}
             <PasswordInput
               label="Password"
-              placeholder="Moka@1234"
               size="md"
               radius="md"
               description="8+ chars with uppercase, lowercase, number & special character"
@@ -219,7 +217,7 @@ const Register = () => {
               placeholder="Confirm your password"
               size="md"
               radius="md"
-              {...form.getInputProps("confirmPassword")}
+              {...form.getInputProps("Confirmpassword")}
             />
 
             {/* Role Selection */}
@@ -230,14 +228,14 @@ const Register = () => {
               radius="md"
               data={[
                 {
-                  value: "CUSTOME",
+                  value: roles[1],
                   label: "Customer ",
                 },
                 {
-                  value: "RECEPTIONIST",
+                  value: roles[2],
                   label: "Receptionist ",
                 },
-                { value: "Admin", label: "Admin " },
+                { value: roles[0], label: "Admin" },
               ]}
               {...form.getInputProps("role")}
             />
@@ -267,9 +265,9 @@ const Register = () => {
                     • {form.errors.password}
                   </Text>
                 )}
-                {form.errors.confirmPassword && (
+                {form.errors.Confirmpassword && (
                   <Text size="sm" mt="xs">
-                    • {form.errors.confirmPassword}
+                    • {form.errors.Confirmpassword}
                   </Text>
                 )}
               </Alert>
