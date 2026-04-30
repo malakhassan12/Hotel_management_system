@@ -5,13 +5,20 @@ import { AppShell, Burger, Button, Group } from "@mantine/core";
 
 import Logo from "../Logo/Logo";
 import ThemeToggle from "../Buttons/ThemeToggle";
+import { useNavigate } from "react-router-dom";
 
 const StartedHeader = ({ opened, toggle }) => {
+  const navigate = useNavigate();
+
   const Buttons = () => {
     return (
       <Group gap="sm">
-        <Button variant="default">Sign in</Button>
-        <Button variant="light">Sign up</Button>
+        <Button variant="default" onClick={() => navigate("/login")}>
+          Sign in
+        </Button>
+        <Button variant="light" onClick={() => navigate("/register")}>
+          Sign up
+        </Button>
         <ThemeToggle />
       </Group>
     );

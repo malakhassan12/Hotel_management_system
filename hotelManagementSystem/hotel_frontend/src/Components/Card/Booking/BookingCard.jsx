@@ -10,24 +10,34 @@ const BookingCard = ({ item }) => {
   const { title, value, icon: Icon, color, trend } = item;
 
   const getTrendIcon = () => {
-    if (!trend) return null;
-    if (trend === "0") return <IconMinus size={14} />;
+    if (!trend && trend !== 0) return null;
+    if (trend === 0) return <IconMinus size={14} />;
     if (trend > 0) return <IconTrendingUp size={14} />;
     return <IconTrendingDown size={14} />;
   };
 
   const getTrendColor = () => {
-    if (!trend) return "gray";
-    if (trend === "0") return "gray";
+    if (!trend && trend !== 0) return "gray";
+    if (trend === 0) return "gray";
     if (trend > 0) return "green";
     return "red";
   };
 
   const getTrendText = () => {
-    if (!trend) return "";
-    if (trend === "0") return "No change";
-    if (trend > 0) return `+${trend} from yesterday`;
-    return `${trend} from yesterday`;
+    if (!trend && trend !== 0) return "";
+    if (trend === 0) return "No change";
+    if (trend > 0) return `+${trend}% of total`;
+    return `${trend}% of total`;
+  };
+
+  // Format the display value
+  const formatDisplayValue = () => {
+    if (title === "Total Revenue") {
+      // Format as currency
+      return `$${value?.toLocaleString() || 0}`;
+    }
+    // Format as number
+    return value?.toLocaleString() || 0;
   };
 
   return (
@@ -47,7 +57,7 @@ const BookingCard = ({ item }) => {
             {title}
           </Text>
           <Text size="2rem" fw={700} mt={4}>
-            {value}
+            {formatDisplayValue()}
           </Text>
         </div>
 
@@ -67,7 +77,7 @@ const BookingCard = ({ item }) => {
             </Text>
           </Group>
           <Text size="xs" c="dimmed">
-            vs yesterday
+            of total bookings
           </Text>
         </Group>
       )}
