@@ -10,18 +10,21 @@ import "@mantine/core/styles.css";
 import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { colorSchemeManager, resolver, Theme } from "./Themes/Theme.js";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-
+const queryClient = new QueryClient();
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
-    <MantineProvider
-      theme={Theme}
-      colorSchemeManager={colorSchemeManager}
-      // defaultColorScheme="dark" // هيبدأ Dark لو مفيش حاجة متسيفة
-      cssVariablesResolver={resolver} // <--- السطر ده هو أهم حتة
-    >
-      <Notifications position="top-right" />
-      <App />
-    </MantineProvider>
+    <QueryClientProvider client={queryClient}>
+      <MantineProvider
+        theme={Theme}
+        colorSchemeManager={colorSchemeManager}
+        // defaultColorScheme="dark" // هيبدأ Dark لو مفيش حاجة متسيفة
+        cssVariablesResolver={resolver} // <--- السطر ده هو أهم حتة
+      >
+        <Notifications position="top-right" />
+        <App />
+      </MantineProvider>
+    </QueryClientProvider>
   </BrowserRouter>,
 );

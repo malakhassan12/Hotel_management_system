@@ -5,6 +5,8 @@ import "aos/dist/aos.css";
 
 import LoadingPage from "./Pages/LoadingPage/LoadingPage";
 import ProtectedRoute from "./Routes/ProtectedRoute";
+import { roles } from "./Constants/ConstantsFromBack";
+import useAuthStore from "./Store/authStore";
 
 // Lazy Loading for Public Pages
 const NotFound = lazy(() => import("./Pages/NotFound"));
@@ -14,7 +16,7 @@ const Register = lazy(() => import("./Pages/Auth/Register/Register"));
 const BrowseRooms = lazy(() => import("./Pages/Room/BrowseRooms"));
 const Settings = lazy(() => import("./Pages/Settings"));
 const Notifications = lazy(() => import("./Pages/Notifications"));
-const Logout=lazy(()=>import("./Pages/Auth/Logout/Logout"))
+const Logout = lazy(() => import("./Pages/Auth/Logout/Logout"));
 
 // Layout Pages
 const CustomerLayout = lazy(() => import("./Layout/CustomerLayout"));
@@ -54,10 +56,7 @@ const Reviews = lazy(() => import("./Pages/Admin/Reviews"));
 const SystemLogs = lazy(() => import("./Pages/Admin/SystemLogs"));
 
 function App() {
-  const user = {
-    name: "Malak",
-    role: "Receptionist",
-  };
+  const { role } = useAuthStore();
 
   useEffect(() => {
     import("aos").then((aos) => {
@@ -77,12 +76,12 @@ function App() {
 
           {/* ===================================== Customer ==================================  */}
 
-          <Route element={<ProtectedRoute allowedRoles={["Customer"]} />}>
+          <Route element={<ProtectedRoute allowedRoles={[roles[1]]} />}>
             <Route path="/customer" element={<CustomerLayout />}>
               <Route index element={<BrowseRooms />} />
-             <Route path="reviews" element={<RoomReviews />} />
+              <Route path="reviews" element={<RoomReviews />} />
               {/* <Route path="rooms/:roomId" element={<RoomDetails />} /> */}
-              <Route path=":roomId" element={<RoomDetails/>}/>
+              <Route path=":roomId" element={<RoomDetails />} />
               <Route path="book-room/:roomId" element={<BookRoom />} />
               <Route path="favourites" element={<Favourites />} />
               <Route path="my-bookings" element={<MyBookings />} />
@@ -96,7 +95,7 @@ function App() {
 
           {/* ===================================== Receptionist ==================================  */}
 
-          <Route element={<ProtectedRoute allowedRoles={["Receptionist"]} />}>
+          <Route element={<ProtectedRoute allowedRoles={[roles[2]]} />}>
             <Route path="/receptionist" element={<ReceptionistLayout />}>
               <Route index element={<ReceptionistDashBoard />} />
               <Route path="booking-requests" element={<BookingRequests />} />
@@ -123,7 +122,7 @@ function App() {
 
           {/* ===================================== Admin ==================================  */}
 
-          <Route element={<ProtectedRoute allowedRoles={["Admin"]} />}>
+          <Route element={<ProtectedRoute allowedRoles={[roles[0]]} />}>
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminDashBoard />} />
 
@@ -146,10 +145,10 @@ function App() {
           <Route
             path="/"
             element={
-              user ? (
-                user.role === "admin" ? (
+              role ? (
+                role === roles[0] ? (
                   <Navigate to="/admin" />
-                ) : user.role === "receptionist" ? (
+                ) : role === roles[2] ? (
                   <Navigate to="/receptionist" />
                 ) : (
                   <Navigate to="/customer" />
@@ -158,12 +157,10 @@ function App() {
                 <Navigate to="/" />
               )
             }
-          /> 
-     
+          />
 
           {/* 404 Not Found */}
           <Route path="*" element={<NotFound />} />
-          
         </Routes>
       </Suspense>
     </>

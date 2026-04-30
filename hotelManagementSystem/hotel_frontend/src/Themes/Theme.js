@@ -1,8 +1,10 @@
 import {
   createTheme,
+  Loader,
   localStorageColorSchemeManager,
   Title,
 } from "@mantine/core";
+import { RingLoader } from "./RingLoader";
 
 const Theme = createTheme({
   colors: {
@@ -278,6 +280,12 @@ const Theme = createTheme({
   focusClassName: "focus",
 
   components: {
+     Loader: Loader.extend({
+      defaultProps: {
+        loaders: { ...Loader.defaultLoaders, ring: RingLoader },
+        type: 'ring',
+      },
+    }),
     Button: {
       defaultProps: {
         radius: "md",
