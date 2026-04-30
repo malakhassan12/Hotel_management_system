@@ -1,117 +1,102 @@
 // ******************************** Mantline UI ********************************
-import { SimpleGrid, Stack } from "@mantine/core";
+import { SimpleGrid, Stack, Loader, Center, Alert } from "@mantine/core";
 // ******************************** Components ********************************
-
 import RoomCard from "./RoomCard";
+import useAuthStore from "../../../Store/authStore";
+import useGetAllRooms from "../../../Hooks/Room/useGetAllRooms";
+import { IconAlertCircle } from "@tabler/icons-react";
+import Loading from "../../Loader/Loading";
+import NoData from "../../Empty/NoData";
 
 const RoomCards = () => {
-  const rooms = [
-    {
-      id: 1,
-      title: "Deluxe Ocean View",
-      price: "$250",
-      category: "Available",
-      description:
-        "Stunning ocean views with luxury amenities, perfect for romantic getaway",
-      rating: 4.8,
-      guests: 2,
-      image:
-        "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=400&h=250&fit=crop",
-      features: ["Ocean View", "King Bed", "Balcony", "Free WiFi"],
-      status: "Available",
-      beds: "King",
-      size: "45m²",
-    },
-    {
-      id: 2,
-      title: "Standard Room",
-      price: "$120",
-      category: "Available",
-      description:
-        "Comfortable room with city views, ideal for business travelers",
-      rating: 4.2,
-      guests: 2,
-      image:
-        "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&h=250&fit=crop",
-      features: ["City View", "Queen Bed", "Work Desk", "Free WiFi"],
-      status: "Available",
-      beds: "Queen",
-      size: "30m²",
-    },
-    {
-      id: 3,
-      title: "Executive Suite",
-      price: "$400",
-      category: "Booked",
-      description:
-        "Luxury suite with separate living room and premium amenities",
-      rating: 4.9,
-      guests: 4,
-      image:
-        "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=400&h=250&fit=crop",
-      features: [
-        "Panoramic View",
-        "King Bed",
-        "Living Room",
-        "Jacuzzi",
-        "Free WiFi",
-      ],
-      status: "Booked",
-      beds: "King",
-      size: "75m²",
-    },
-    {
-      id: 4,
-      title: "Family Room",
-      price: "$280",
-      category: "Available",
-      description: "Spacious room perfect for families with kids",
-      rating: 4.6,
-      guests: 5,
-      image:
-        "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=400&h=250&fit=crop",
-      features: ["Garden View", "2 Queen Beds", "Kids Area", "Free WiFi"],
-      status: "Available",
-      beds: "2 Queen",
-      size: "55m²",
-    },
-    {
-      id: 5,
-      title: "Presidential Suite",
-      price: "$800",
-      category: "Maintenance",
-      description: "Ultimate luxury with private butler service",
-      rating: 5.0,
-      guests: 6,
-      image:
-        "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&h=250&fit=crop",
-      features: [
-        "City View",
-        "King Bed",
-        "Private Pool",
-        "Butler Service",
-        "Free WiFi",
-      ],
-      status: "Maintenance",
-      beds: "King",
-      size: "120m²",
-    },
-    {
-      id: 6,
-      title: "Garden View Room",
-      price: "$180",
-      category: "Available",
-      description: "Peaceful room overlooking our beautiful gardens",
-      rating: 4.5,
-      guests: 2,
-      image:
-        "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=400&h=250&fit=crop",
-      features: ["Garden View", "Queen Bed", "Patio", "Free WiFi"],
-      status: "Available",
-      beds: "Queen",
-      size: "35m²",
-    },
-  ];
+  const { data: apiRooms = [], isLoading, error } = useGetAllRooms();
+  const { role } = useAuthStore();
+
+  // Map API data to the format expected by RoomCard
+  const mapRoomData = (room) => {
+    // Get the first image or use default
+    const firstImage = room.images?.[0]?.imagePath;
+    console.log(firstImage)
+    const imageUrl = firstImage 
+      ? `http://localhost:8080/${firstImage}` 
+      : "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=400&h=250&fit=crop";
+
+    // Build features array from room amenities
+    const features = [];
+    if (room.oceanView) features.push("Ocean View");
+    if (room.kingBed) features.push("King Bed");
+    if (room.balcony) features.push("Balcony");
+    if (room.miniBar) features.push("Mini Bar");
+    if (room.wifi) features.push("Free WiFi");
+    if (room.smartTv) features.push("Smart TV");
+
+    // Map status
+    const statusMap = {
+      "Available": "Available",
+      "Booked": "Booked",
+      "Maintenance": "Maintenance"
+    };
+    const status = statusMap[room.status] || "Available";
+
+    // Generate title from room type and number
+    const roomTypeMap = {
+      "SINGLE": "Single Room",
+      "DOUBLE": "Double Room",
+      "SUITE": "Suite",
+      "DELUXE": "Deluxe Room",
+      "FAMILY": "Family Room"
+    };
+    const title = `${roomTypeMap[room.roomType] || room.roomType || "Room"} ${room.roomNumber}`;
+
+    return {
+      id: room.id,
+      title: title,
+      price: `$${room.pricePerNight}`,
+      category: room.roomType || "Standard",
+      description: room.description || "Comfortable room with great amenities",
+      rating: 4.5, // You can add rating to your API if needed
+      guests: room.maxNumberOfUsers || 2,
+      image: imageUrl,
+      features: features,
+      status: status,
+      beds: room.kingBed ? "King" : room.maxNumberOfUsers > 2 ? "Queen" : "Standard",
+      size: room.maxNumberOfUsers === 2 ? "30m²" : room.maxNumberOfUsers === 4 ? "55m²" : "45m²",
+      roomNumber: room.roomNumber,
+      roomType: room.roomType,
+      pricePerNight: room.pricePerNight,
+      maxNumberOfUsers: room.maxNumberOfUsers,
+      oceanView: room.oceanView,
+      kingBed: room.kingBed,
+      balcony: room.balcony,
+      miniBar: room.miniBar,
+      wifi: room.wifi,
+      smartTv: room.smartTv,
+      images: room.images,
+    };
+  };
+
+  // Transform API data to the format expected by RoomCard
+  const rooms = apiRooms.map(mapRoomData);
+
+  console.log("Mapped rooms:", rooms);
+
+  if (isLoading) {
+    return (
+     <Loading/>
+    );
+  }
+
+  if (error) {
+    return (
+     <Error name={"Rooms"} error={error}/>
+    );
+  }
+
+  if (rooms.length === 0) {
+    return (
+     <NoData name={"Rooms"}/>
+    );
+  }
 
   return (
     <Stack gap="lg">
@@ -122,14 +107,14 @@ const RoomCards = () => {
       >
         {rooms.map((room, index) => (
           <div
-            key={index}
+            key={room.id}
             data-aos="fade-down"
             data-aos-offset="200"
             data-aos-easing="ease-in-sine"
             data-aos-duration="700"
             data-aos-delay={index * 100}
           >
-            <RoomCard item={room} role="Customer" />
+            <RoomCard item={room} role={role} />
           </div>
         ))}
       </SimpleGrid>

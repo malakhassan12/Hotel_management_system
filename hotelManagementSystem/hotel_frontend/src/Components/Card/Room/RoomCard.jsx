@@ -1,6 +1,5 @@
-import { useState } from "react";
+import React, { useState } from "react";
 // ******************************** Mantline UI ********************************
-
 import {
   Card,
   Text,
@@ -15,7 +14,6 @@ import {
   Divider,
 } from "@mantine/core";
 // ******************************** ICons ********************************
-
 import {
   IconHeart,
   IconHeartFilled,
@@ -25,41 +23,57 @@ import {
 } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
 import useFavoritesStore from "../../../Store/favoritesStore";
-import { useNavigate,useLocation } from "react-router-dom"; 
-const RoomCard = ({ item, role = "customer" }) => {
-  
+import { useNavigate, useLocation } from "react-router-dom";
+import { roles, roomStatus } from "../../../Constants/ConstantsFromBack";
+import useRoomMutations from "../../../Hooks/Room/useRoomMutations";
+import getStatusConfigRoom from "../../../Utils/Room/getStatusConfigRoom";
+
+const RoomCard = ({ item, role = "CUSTOMER" }) => {
+  console.log(item.status)
   const [currentStatus, setCurrentStatus] = useState(
     item.status || "Available",
   );
 
-const navigate = useNavigate();
-const {
-  addToFavorites,
-  removeFromFavorites,
-  isFavorite,
-} = useFavoritesStore();
+  const { updateRoomStatusMutation } = useRoomMutations();
+  const navigate = useNavigate();
+  const { addToFavorites, removeFromFavorites, isFavorite } =
+    useFavoritesStore();
 
-const liked = isFavorite(item.id);
+  const liked = isFavorite(item.id);
+
   const defaultImage =
     "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=400&h=250&fit=crop";
 
-  const statusColors = {
-    Available: "green",
-    Booked: "orange",
-    Maintenance: "red",
-  };
-
-  const statusOptions = ["Available", "Booked", "Maintenance"];
+ 
 
   const handleStatusChange = (newStatus) => {
     setCurrentStatus(newStatus);
 
-  };
-const location = useLocation();
+    console.log(item.id, newStatus);
 
-const Favorite = location.pathname.endsWith("/favourites");
+    updateRoomStatusMutation.mutate({
+      roomId: item.id,
+      status: newStatus,
+    });
+
+    // Here you can add API call to update room status
+    console.log(`Room ${item.id} status changed to ${newStatus}`);
+  };
+
+  const location = useLocation();
+  const Favorite = location.pathname.endsWith("/favourites");
+
   return (
     <Card
+      padding="lg"
+      radius="md"
+      withBorder
+      style={{
+        transition: "transform 0.2s ease, box-shadow 0.2s ease",
+        cursor: "pointer",
+        position: "relative",
+        overflow: "hidden",
+      }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = "translateY(-4px)";
         e.currentTarget.style.boxShadow = "var(--mantine-shadow-lg)";
@@ -81,13 +95,14 @@ const Favorite = location.pathname.endsWith("/favourites");
       <Badge
         size="sm"
         radius="xl"
-        color={statusColors[currentStatus] || "gray"}
+        color={getStatusConfigRoom(item.status).color|| "gray"}
         variant="light"
         style={{
           position: "absolute",
           top: 10,
           right: 10,
           zIndex: 1,
+          backdropFilter: "blur(4px)",
         }}
       >
         {currentStatus}
@@ -97,13 +112,13 @@ const Favorite = location.pathname.endsWith("/favourites");
         <Group justify="space-between" align="center">
           <div>
             <Text size="xs" c="dimmed" tt="uppercase" fw={600}>
-              {item.category || "Deluxe"}
+              Room {item.roomNumber || item.category || "Deluxe"}
             </Text>
             <Text size="lg" fw={700}>
               {item.title}
             </Text>
           </div>
-          <div>
+          <div style={{ textAlign: "right" }}>
             <Text size="xl" fw={700} c="primary">
               {item.price}
             </Text>
@@ -114,25 +129,15 @@ const Favorite = location.pathname.endsWith("/favourites");
         </Group>
 
         <Text size="sm" c="dimmed" lineClamp={2}>
-          {item.description || "Stunning ocean views with luxury amenities"}
+          {item.description}
         </Text>
 
         <Group justify="space-between">
-          <Group gap="xs">
-            <Rating
-              value={item.rating || 4.8}
-              fractions={2}
-              readOnly
-              size="sm"
-            />
-            <Text size="sm" fw={500}>
-              {item.rating || 4.8}
-            </Text>
-          </Group>
+         
           <Group gap="xs">
             <IconUsers size={14} />
             <Text size="xs" c="dimmed">
-              {item.guests || 2} Guests
+              {item.guests} {item.guests === 1 ? "Guest" : "Guests"}
             </Text>
           </Group>
         </Group>
@@ -142,19 +147,7 @@ const Favorite = location.pathname.endsWith("/favourites");
             <Badge key={i} size="sm" variant="light" color="gray" radius="xl">
               {feature}
             </Badge>
-          )) || (
-            <>
-              <Badge size="sm" variant="light" color="gray" radius="xl">
-                Ocean View
-              </Badge>
-              <Badge size="sm" variant="light" color="gray" radius="xl">
-                King Bed
-              </Badge>
-              <Badge size="sm" variant="light" color="gray" radius="xl">
-                Balcony
-              </Badge>
-            </>
-          )}
+          ))}
         </Group>
 
         <Divider />
@@ -162,7 +155,7 @@ const Favorite = location.pathname.endsWith("/favourites");
         <Group justify="space-between" mt="sm">
           <Button
             component={Link}
-            to= {Favorite ? `/customer/${item.id}` : `${item.id}`}
+            to={Favorite ? `/customer/${item.id}` : `${item.id}`}
             variant="light"
             color="primary"
             size="sm"
@@ -170,13 +163,13 @@ const Favorite = location.pathname.endsWith("/favourites");
             View Details
           </Button>
 
-          {role === "receptionist" ? (
-            // Receptionist: Update Status Button with sMenu
+          {role === roles[2] ? (
+            // Receptionist: Update Status Button with Menu
             <Menu shadow="md" width={150} position="bottom-end">
               <Menu.Target>
                 <Button
                   variant="filled"
-                  color={statusColors[currentStatus]}
+                  color={getStatusConfigRoom(item.status).color}
                   size="sm"
                 >
                   Update Status
@@ -184,20 +177,17 @@ const Favorite = location.pathname.endsWith("/favourites");
               </Menu.Target>
               <Menu.Dropdown>
                 <Menu.Label>Change Status</Menu.Label>
-                {statusOptions.map((status) => (
+                {roomStatus.map((status) => (
                   <Menu.Item
                     key={status}
-                    color={statusColors[status]}
+                    color={getStatusConfigRoom(status).color}
                     onClick={() => handleStatusChange(status)}
-                    leftSection={
-                      status === "Available" ? (
-                        <IconCheck size={14} />
-                      ) : status === "Booked" ? (
-                        <IconUsers size={14} />
-                      ) : (
-                        <IconTools size={14} />
-                      )
-                    }
+                    leftSection={React.createElement(
+                      getStatusConfigRoom(status).icon,
+                      {
+                        size: 16,
+                      },
+                    )}
                   >
                     {status}
                   </Menu.Item>
@@ -206,20 +196,19 @@ const Favorite = location.pathname.endsWith("/favourites");
             </Menu>
           ) : (
             // Customer: Book Now Button with Love Icon
-            <>
+            <Group gap="xs">
               <ActionIcon
                 variant="light"
                 color="red"
                 size="md"
                 radius="xl"
-               onClick={() => {
-  if (liked) {
-    removeFromFavorites(item.id);
-  } else {
-    addToFavorites(item);
-  
-  }
-}}
+                onClick={() => {
+                  if (liked) {
+                    removeFromFavorites(item.id);
+                  } else {
+                    addToFavorites(item);
+                  }
+                }}
               >
                 {liked ? (
                   <IconHeartFilled size={18} />
@@ -227,17 +216,15 @@ const Favorite = location.pathname.endsWith("/favourites");
                   <IconHeart size={18} />
                 )}
               </ActionIcon>
-              <Button 
-  onClick={() => navigate(`/customer/book-room/${item.id}`)}
-  variant="filled"
-  size="sm"
-
-  color="primary"
->
-  Book Now
-</Button>
-              
-            </>
+              <Button
+                onClick={() => navigate(`/customer/book-room/${item.id}`)}
+                variant="filled"
+                size="sm"
+                color="primary"
+              >
+                Book Now
+              </Button>
+            </Group>
           )}
         </Group>
       </Stack>

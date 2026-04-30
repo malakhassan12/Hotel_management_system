@@ -11,11 +11,14 @@ import GeneralNav from "../Components/Nav/GeneralNav";
 import { Outlet } from "react-router-dom";
 
 import { ReceptionistNavLinks } from "../Constants/ReceptionisConstants";
+import useAuthStore from "../Store/authStore";
 const ReceptionistLayout = () => {
   const [disabled] = useDisclosure();
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
 
+  const { token, role, user } = useAuthStore();
+  console.log(token, role, user);
   return (
     <AppShell
       navbar={{

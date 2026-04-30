@@ -1,49 +1,44 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { notifications } from "@mantine/notifications";
-import useAuthStore from "../Store/authStore";
+import authClient from "../Api/Client/Auth/Auth.client";
 
 export const useRegister = () => {
-  const navigate = useNavigate();
-  const { login } = useAuthStore();   
-
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState("");
 
   const registerUser = async (values) => {
     setLoading(true);
     setServerError("");
+    console.log(values ,"From use ")
 
-    
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      const res = await authClient.post("/register", values);
+      const data = res.data;
 
-    
-    if (values.email && values.password && values.fullName) {
-     
-      const mockToken = `demo-token-${Date.now()}`;
-
-      login(mockToken, values.role, {
-        email: values.email,
-        fullName: values.fullName,
-      });
-
+      // 2. Handle Success
       notifications.show({
- title: "Account Created Successfully",
-        message: `Welcome ${values.fullName}, you have been logged in automatically`,
+        title: "Account Created",
+        message: `Welcome ${values.username}!`,
         color: "green",
-        autoClose: 4000,
       });
 
-      
-      if (values.role === "Admin") navigate("/admin");
-      else if (values.role === "Receptionist") navigate("/receptionist");
-      else navigate("/customer");
 
-      return { success: true };
-    } else {
-      setServerError("Please fill all fields correctly");
+      return { success: true, data };
+
+    } catch (err) {
+      // 3. Handle Errors (Validation, Email taken, etc.)
+      const errorMsg = err.response?.data?.message || "Something went wrong";
+      setServerError(errorMsg);
+      
+      notifications.show({
+        title: "Registration Failed",
+        message: errorMsg,
+        color: "red",
+      });
+
+      return { success: false, error: errorMsg };
+    } finally {
       setLoading(false);
-      return { success: false };
     }
   };
 

@@ -1,5 +1,6 @@
 import { Select, TextInput,  Box, Text, Grid } from "@mantine/core";
 import { IconFilter, IconSearch } from "@tabler/icons-react";
+import { bookingStatus } from "../../Constants/ConstantsFromBack";
 
 const SearchBySelect = ({
   statusValue,
@@ -8,15 +9,6 @@ const SearchBySelect = ({
   onSearchChange,
   showSearch = true,
 }) => {
-  const statusOptions = [
-    { value: "all", label: "All Status" },
-    { value: "pending", label: "Pending", color: "orange" },
-    { value: "confirmed", label: "Confirmed", color: "green" },
-    { value: "rejected", label: "Rejected", color: "red" },
-    { value: "checked-in", label: "Checked-in", color: "green" },
-    { value: "checked-out", label: "Checked-out", color: "blue" },
-  ];
-
   return (
     <Box>
       <Text size="sm" fw={600} mb={8} c="dimmed">
@@ -42,7 +34,7 @@ const SearchBySelect = ({
             placeholder="Filter by status"
             value={statusValue}
             onChange={onStatusChange}
-            data={statusOptions}
+            data={bookingStatus}
             clearable
             leftSection={<IconFilter size={16} />}
             radius="md"

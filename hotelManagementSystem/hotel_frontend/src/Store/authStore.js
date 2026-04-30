@@ -1,11 +1,13 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 const useAuthStore = create((set) => ({
-  token: null,
-  role: null,
-  user: null,
-  isAuthenticated: false,
-
+  token: localStorage.getItem("token"),
+  role: localStorage.getItem("role"),
+  user: (() => {
+    const userStr = localStorage.getItem("user");
+    return userStr ? JSON.parse(userStr) : null; 
+  })(),
+  isAuthenticated: localStorage.getItem("token") ? true : false,
 
   login: (token, role, user = {}) => {
     localStorage.setItem("token", token);
@@ -20,7 +22,6 @@ const useAuthStore = create((set) => ({
     });
   },
 
- 
   logout: () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
@@ -34,7 +35,6 @@ const useAuthStore = create((set) => ({
     });
   },
 
- 
   loadAuthFromStorage: () => {
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
