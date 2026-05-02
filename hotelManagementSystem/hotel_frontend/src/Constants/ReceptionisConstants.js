@@ -30,17 +30,17 @@ const ReceptionistNavLinks = [
     ],
   },
   {
-    id: "checkIn",
-    label: "Check-In",
-    path: "check-in-management",
+    id: "check",
+    label: "Check Managemnet",
+    path: "check-management",
     icon: "IconDoorEnter",
   },
-  {
-    id: "checkOut",
-    label: "Check-Out",
-    path: "check-out-management",
-    icon: "IconDoorExit",
-  },
+  // {
+  //   id: "checkOut",
+  //   label: "Check-Out",
+  //   path: "check-out-management",
+  //   icon: "IconDoorExit",
+  // },
   {
     id: "notification",
     label: "Notifications",

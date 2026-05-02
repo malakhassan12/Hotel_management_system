@@ -24,8 +24,14 @@ import {
   IconCreditCard,
   IconSettings,
 } from "@tabler/icons-react";
+import useGetAllNotificationByUserId from "../../../Hooks/Notification/useGetAllNotificationByUserId";
+import useAuthStore from "../../../Store/authStore";
 
 const NotificationsTab = () => {
+  const { user } = useAuthStore();
+
+  const { data } = useGetAllNotificationByUserId(user?.userId);
+  console.log(data);
   const [searchQuery, setSearchQuery] = useState("");
 
   // Notifications State

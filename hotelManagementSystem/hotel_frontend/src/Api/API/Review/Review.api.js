@@ -9,4 +9,13 @@ const getReviewsByRoom = async (roomId) => {
   }
 };
 
-export { getReviewsByRoom };
+const getAVGReviews = async (roomId) => {
+  try {
+    const res = await reviewClient.get(`/average/${roomId}`);
+    return res?.data;
+  } catch (err) {
+    return err;
+  }
+};
+
+export { getReviewsByRoom, getAVGReviews };

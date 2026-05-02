@@ -2,17 +2,17 @@ import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-const bookingClient = axios.create({
-  baseURL: API_URL + "/bookings",
+const notificationClient = axios.create({
+  baseURL: API_URL + "/notifications",
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-bookingClient.interceptors.request.use(
+notificationClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
-    console.log(token)
+    console.log(token);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -21,7 +21,7 @@ bookingClient.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
-bookingClient.interceptors.response.use(
+notificationClient.interceptors.response.use(
   (response) => response, 
   (error) => {
     if (error.response && (error.response.status === 403 || error.response.status === 401)) {
@@ -37,4 +37,4 @@ bookingClient.interceptors.response.use(
 );
 
 
-export default bookingClient;
+export default notificationClient;

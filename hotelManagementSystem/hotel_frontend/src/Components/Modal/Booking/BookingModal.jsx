@@ -34,6 +34,7 @@ import useBookingMutations from "../../../Hooks/Employee/useBookingMutations";
 
 const BookingModal = ({ opened, close, booking, type = "booking" }) => {
   const mappedData = mapBookingData(booking);
+  console.log(booking)
 
   const { acceptBookingMutation, rejectBookingMutation } =
     useBookingMutations();
@@ -78,11 +79,13 @@ const BookingModal = ({ opened, close, booking, type = "booking" }) => {
 
   const handleConfirmBooking = async (booking) => {
     acceptBookingMutation.mutate(booking?.id);
+    close();
   };
 
   // Handle cancel booking
   const handleCancelBooking = async (booking) => {
     rejectBookingMutation.mutate(booking?.id);
+    close();
   };
 
   return (
@@ -368,13 +371,14 @@ const BookingModal = ({ opened, close, booking, type = "booking" }) => {
         <Divider />
 
         {/* Action Buttons - only show for type "booking" */}
-        {type === "booking" && (
+        {type === "booking" && booking?.status == "pending" && (
           <Group justify="space-between" mt="md">
             <Button
               variant="outline"
               color="red"
               leftSection={<IconX size={16} />}
               onClick={() => handleCancelBooking(booking)}
+              loading={rejectBookingMutation?.isPending}
             >
               Reject
             </Button>
@@ -383,6 +387,7 @@ const BookingModal = ({ opened, close, booking, type = "booking" }) => {
               color="green"
               leftSection={<IconCheck size={16} />}
               onClick={() => handleConfirmBooking(booking)}
+              loading={acceptBookingMutation?.isPending}
             >
               Accept
             </Button>
