@@ -20,4 +20,18 @@ roomClient.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
+roomClient.interceptors.response.use(
+  (response) => response, 
+  (error) => {
+    if (error.response && (error.response.status === 403 || error.response.status === 401)) {
+      console.log("Access Forbidden or Unauthorized! Redirecting to login...");
+
+      localStorage.removeItem("token");
+
+      window.location.href = "/login";
+    }
+
+    return Promise.reject(error);
+  }
+);
 export default roomClient;

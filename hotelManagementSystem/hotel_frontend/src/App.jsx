@@ -108,13 +108,13 @@ function App() {
               <Route path="room-management" element={<RoomsManagement />} />
 
               <Route
-                path="check-in-management"
+                path="check-management"
                 element={<CheckInManagement />}
               />
-              <Route
+              {/* <Route
                 path="check-out-management"
                 element={<CheckOutManagement />}
-              />
+              /> */}
               <Route path="settings" element={<Settings />} />
               <Route path="notifications" element={<Notifications />} />
             </Route>

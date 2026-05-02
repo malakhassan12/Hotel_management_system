@@ -48,12 +48,39 @@ const getConfirmedBookings = async () => {
 const getRevenueBookings = async () => {
   try {
     const res = await bookingClient.get(`/revenue/total`);
+    console.log("getRevenueBookings"  , res)
     return res?.data;
   } catch (err) {
     return err;
   }
 };
 
+const checkIn = async (bookingId) => {
+  try {
+    const res = await bookingClient.post(`/${bookingId}/checkin`);
+    return res?.data;
+  } catch (err) {
+    return err;
+  }
+};
+
+const checkOut = async (bookingId) => {
+  try {
+    const res = await bookingClient.post(`/${bookingId}/checkout`);
+    return res?.data;
+  } catch (err) {
+    return err;
+  }
+};
+
+const getRevenueByMonth = async () => {
+  try {
+    const res = await bookingClient.get(`/monthly-revenue`);
+    return res?.data;
+  } catch (err) {
+    return err;
+  }
+};
 export {
   getAllBookings,
   acceptBooking,
@@ -61,4 +88,7 @@ export {
   getPendingBookings,
   getConfirmedBookings,
   getRevenueBookings,
+  checkIn,
+  checkOut,
+  getRevenueByMonth,
 };

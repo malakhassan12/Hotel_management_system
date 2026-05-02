@@ -38,10 +38,11 @@ import {
 import useAuthStore from "../../Store/authStore";
 import useGetRoom from "../../Hooks/Room/useGetRoom";
 import { roles } from "../../Constants/ConstantsFromBack";
-import { mapRoomData } from "../../Functions/Booking/RoomFunctions";
+import { mapRoomData } from "../../Functions/Room/RoomFunctions";
 import Loading from "../../Components/Loader/Loading";
 import NoData from "../../Components/Empty/NoData";
-import useGetReviewByRoom from "../../Hooks/Review/useGetReviewByRoom";
+import ReviewCard from "../../Components/Card/Review/ReviewCard";
+import useGetImagesByRoom from "../../Hooks/Room/useGetImagesByRoom";
 
 const RoomDetails = () => {
   const { roomId } = useParams();
@@ -49,12 +50,9 @@ const RoomDetails = () => {
   const { role } = useAuthStore();
   const [selectedImage, setSelectedImage] = useState(0);
 
-  const { data } = useGetReviewByRoom(roomId);
+  const { data: images = [] } = useGetImagesByRoom(roomId);
 
-  const reviews = data?.reviews;
-  console.log(reviews);
-
-  console.log(data);
+  console.log(images);
   // Map API data to display format
 
   const room = mapRoomData(apiRoom);
@@ -100,7 +98,7 @@ const RoomDetails = () => {
               {/* Image Gallery */}
               <Paper withBorder radius="md" p="sm">
                 <Image
-                  src={room.images[selectedImage]}
+                  src={images[0]}
                   height={400}
                   alt={room.title}
                   radius="md"
@@ -109,7 +107,7 @@ const RoomDetails = () => {
                 />
                 {room.images.length > 1 && (
                   <Group mt="sm" gap="sm">
-                    {room.images.map((img, i) => (
+                    {images?.map((img, i) => (
                       <Image
                         key={i}
                         src={img}
@@ -257,32 +255,7 @@ const RoomDetails = () => {
 
               <Divider />
 
-              {/* ========== REVIEWS SECTION ========== */}
-              <div>
-                <Title order={3} mb="md">
-                  Reviews
-                </Title>
-                <Paper
-                  withBorder
-                  p="xl"
-                  radius="md"
-                  bg="var(--mantine-color-body)"
-                >
-                  <Stack align="center" gap="md">
-                    <IconStar
-                      size={48}
-                      color="var(--mantine-color-gray-5)"
-                      stroke={1}
-                    />
-                    <Text size="lg" fw={600} ta="center">
-                      No Reviews Yet
-                    </Text>
-                    <Text size="sm" c="dimmed" ta="center">
-                      Be the first to review this room!
-                    </Text>
-                  </Stack>
-                </Paper>
-              </div>
+              <ReviewCard roomId={roomId} />
               {/* ========== END REVIEWS SECTION ========== */}
             </Stack>
           </Grid.Col>
