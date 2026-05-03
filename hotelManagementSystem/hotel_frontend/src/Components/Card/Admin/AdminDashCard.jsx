@@ -1,73 +1,84 @@
 import React from "react";
-// ******************************** Mantline UI ********************************
-
-import { Card, Text, Group, ThemeIcon, Stack, Badge } from "@mantine/core";
-// ******************************** Icons ********************************
-
-import { IconTrendingUp, IconTrendingDown } from "@tabler/icons-react";
+import { Paper, Text, Group, ThemeIcon, Stack, Badge } from "@mantine/core";
+import { IconTrendingUp, IconTrendingDown, IconMinus } from "@tabler/icons-react";
 
 const AdminDashCard = ({ card }) => {
   const { title, value, icon: Icon, color, trend, trendValue, bgColor } = card;
-  const isPositive = trend === "up";
-  const trendIcon = isPositive ? (
-    <IconTrendingUp size={14} />
-  ) : (
-    <IconTrendingDown size={14} />
-  );
-  const trendColor = isPositive ? "green" : "red";
+
+  const getTrendIcon = () => {
+    switch (trend) {
+      case "up":
+        return <IconTrendingUp size={14} />;
+      case "down":
+        return <IconTrendingDown size={14} />;
+      default:
+        return <IconMinus size={14} />;
+    }
+  };
+
+  const getTrendColor = () => {
+    switch (trend) {
+      case "up":
+        return "green";
+      case "down":
+        return "red";
+      default:
+        return "gray";
+    }
+  };
 
   return (
-    <Card
-      withBorder
-      padding="lg"
+    <Paper
+      p="lg"
       radius="md"
-      shadow="sm"
+      withBorder
       style={{
-        transition: "all 0.3s ease",
+        backgroundColor: bgColor || "white",
+        transition: "transform 0.2s, box-shadow 0.2s",
         cursor: "pointer",
         height: "100%",
-        backgroundColor: bgColor || "var(--mantine-color-body)",
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = "translateY(-4px)";
-        e.currentTarget.style.boxShadow = "var(--mantine-shadow-lg)";
+        e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = "translateY(0)";
-        e.currentTarget.style.boxShadow = "var(--mantine-shadow-sm)";
+        e.currentTarget.style.boxShadow = "none";
       }}
     >
       <Group justify="space-between" align="flex-start">
-        <Stack gap={4}>
+        <Stack gap={4} style={{ flex: 1 }}>
           <Text size="xs" c="dimmed" tt="uppercase" fw={600}>
             {title}
           </Text>
-          <Text size="2rem" fw={700} lh={1}>
+          <Text fw={800} size="2rem" style={{ lineHeight: 1.2 }}>
             {value}
           </Text>
+          
+          {trend && trendValue && (
+            <Badge
+              color={getTrendColor()}
+              variant="light"
+              size="sm"
+              leftSection={getTrendIcon()}
+              style={{ width: "fit-content" }}
+            >
+              {trendValue}
+            </Badge>
+          )}
         </Stack>
-        <ThemeIcon size="lg" radius="md" variant="light" color={color}>
-          <Icon size={22} />
+
+        <ThemeIcon
+          size="lg"
+          radius="md"
+          color={color || "blue"}
+          variant="light"
+        >
+          <Icon size={24} stroke={1.5} />
         </ThemeIcon>
       </Group>
-
-      {trend && (
-        <Group justify="space-between" mt="md">
-          <Badge
-            size="sm"
-            radius="xl"
-            variant="light"
-            color={trendColor}
-            leftSection={trendIcon}
-          >
-            {trendValue}
-          </Badge>
-          <Text size="xs" c="dimmed">
-            vs last month
-          </Text>
-        </Group>
-      )}
-    </Card>
+    </Paper>
   );
 };
 

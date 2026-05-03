@@ -3,9 +3,15 @@ import { Modal, Text, Group, Button, Stack, ThemeIcon } from "@mantine/core";
 // ******************************** Icons ********************************
 
 import { IconAlertTriangle, IconTrash, IconX } from "@tabler/icons-react";
+import useRoomMutations from "../../../Hooks/Room/useRoomMutations";
 
-const DeleteRoom = ({ opened, close, roomName }) => {
-  const onConfirm = () => {};
+const DeleteRoom = ({ opened, close, room }) => {
+  const { deleteRoomMutation } = useRoomMutations();
+  const onConfirm = () => {
+    deleteRoomMutation.mutate(room?.id);
+
+    close();
+  };
   return (
     <Modal
       opened={opened}
@@ -27,9 +33,9 @@ const DeleteRoom = ({ opened, close, roomName }) => {
         <Text size="sm" c="dimmed" ta="center">
           Do you really want to delete{" "}
           <Text component="span" fw={700} c="primary">
-            {roomName}
+            {room?.roomNumber} {room?.roomType}
           </Text>
-          ? This process cannot be undone.
+           ? This process cannot be undone.
         </Text>
 
         <Group justify="center" gap="md">

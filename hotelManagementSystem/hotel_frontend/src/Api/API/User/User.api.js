@@ -9,4 +9,15 @@ const getUser = async (userId) => {
   }
 };
 
-export { getUser };
+const getAllUsers = async () => {
+  try {
+    const res = await userClient.get(``);
+    return res?.data;
+  } catch (err) {
+    return err;
+  }
+};
+
+
+
+export { getUser , getAllUsers };

@@ -29,6 +29,12 @@ import useRoomMutations from "../../../Hooks/Room/useRoomMutations";
 import getStatusConfigRoom from "../../../Utils/Room/getStatusConfigRoom";
 
 const RoomCard = ({ item, role = "CUSTOMER" }) => {
+  const roleNavigate =
+    role == "EMPLOYEE"
+      ? "receptionist"
+      : role == "ADMIN"
+        ? "admin"
+        : "customer";
   console.log(item.status);
   const [currentStatus, setCurrentStatus] = useState(
     item.status || "Available",
@@ -156,12 +162,12 @@ const RoomCard = ({ item, role = "CUSTOMER" }) => {
             variant="light"
             color="primary"
             size="sm"
-            onClick={() => navigate(`/receptionist/rooms/${item.id}`)}
+            onClick={() => navigate(`/${roleNavigate}/rooms/${item.id}`)}
           >
             View Details
           </Button>
 
-          {role === roles[2] ? (
+          {role === roles[2] || role === roles[0] ? (
             // Receptionist: Update Status Button with Menu
             <Menu shadow="md" width={150} position="bottom-end">
               <Menu.Target>
