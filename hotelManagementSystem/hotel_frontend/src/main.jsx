@@ -9,6 +9,7 @@ import "@mantine/core/styles.css";
 
 import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
+import "@mantine/notifications/styles.css";
 import { colorSchemeManager, resolver, Theme } from "./Themes/Theme.js";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
@@ -22,7 +23,7 @@ createRoot(document.getElementById("root")).render(
         // defaultColorScheme="dark" // هيبدأ Dark لو مفيش حاجة متسيفة
         cssVariablesResolver={resolver} // <--- السطر ده هو أهم حتة
       >
-        <Notifications position="top-right" />
+        <Notifications position="top-right" zIndex={1000}/>
         <App />
       </MantineProvider>
     </QueryClientProvider>

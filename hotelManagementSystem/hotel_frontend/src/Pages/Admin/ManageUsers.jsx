@@ -1,74 +1,72 @@
-import { Container, Title, Text, Stack, Group, Button } from "@mantine/core";
-import { IconPlus } from "@tabler/icons-react";
-import { useState } from "react";
-
+import { Container, Title, Text, Stack, Group, Paper, ThemeIcon, Badge, SimpleGrid } from "@mantine/core";
+import { IconUsers, IconUserCheck, IconClock } from "@tabler/icons-react";
 import UserTable from "../../Components/Table/Admin/UserTable";
-import UserFilters from "../../Components/Filters/Admin/UserFilters";
-import UserModal from "../../Components/Modal/Admin/UserModal";
-import { useManageUsers } from "../../Hooks/useManageUsers";
+import useGetPendingEmployees from "../../Hooks/User/useGetPendingEmployees";
 
 const ManageUsers = () => {
-  const {
-    users,
-    search,
-    setSearch,
-    roleFilter,
-    setRoleFilter,
-    statusFilter,
-    setStatusFilter,
-    addUser,
-    deleteUser,
-  } = useManageUsers();
+  const { data = [] } = useGetPendingEmployees();
+  const employees = Array.isArray(data) ? data : [];
 
-  const [modalOpened, setModalOpened] = useState(false);
-  const [editingUser, setEditingUser] = useState(null);
+  console.log(employees)
 
-  const handleAddUser = (newUser) => {
-    addUser(newUser);
-  };
+  const pendingCount = employees.filter(u => !u.approved).length;
+  const approvedCount = employees.filter(u => u.approved).length;
 
   return (
     <Container size="xl" py="xl">
       <Stack gap="xl">
-        <Group justify="space-between">
-          <Stack gap={2}>
-            <Title order={1}>Manage Users</Title>
-            <Text c="dimmed">Add, edit, and manage all system users</Text>
-          </Stack>
+        {/* Header Section */}
+        <Paper p="xl" radius="md" shadow="sm" withBorder>
+          <Group justify="space-between" align="center">
+            <Group gap="md">
+              <ThemeIcon size="xl" radius="md" variant="gradient" gradient={{ from: 'blue', to: 'cyan' }}>
+                <IconUsers size={24} />
+              </ThemeIcon>
+              <div>
+                <Title order={3}>User Management</Title>
+                <Text size="sm" c="dimmed" mt={4}>
+                  Manage and review all system users
+                </Text>
+              </div>
+            </Group>
+            <Badge size="lg" variant="gradient" gradient={{ from: 'blue', to: 'cyan' }}>
+              Total: {employees.length}
+            </Badge>
+          </Group>
+        </Paper>
 
-          <Button
-            leftSection={<IconPlus size={18} />}
-            onClick={() => {
-              setEditingUser(null);
-              setModalOpened(true);
-            }}
-            color="gold"
-          >
-            Add New User
-          </Button>
-        </Group>
+        {/* Stats Overview */}
+        <SimpleGrid cols={{ base: 1, sm: 2, md: 2 }} spacing="md">
+          <Paper p="md" radius="md" withBorder >
+            <Group justify="space-between" align="center">
+              <div>
+                <Text size="xs" c="dimmed" tt="uppercase" fw={700}>Pending Approval</Text>
+                <Text fw={700} size="2rem" c="yellow">{pendingCount}</Text>
+              </div>
+              <ThemeIcon size="lg" radius="xl" color="yellow" variant="light">
+                <IconClock size={20} />
+              </ThemeIcon>
+            </Group>
+          </Paper>
 
-        <UserFilters
-          search={search}
-          setSearch={setSearch}
-          roleFilter={roleFilter}
-          setRoleFilter={setRoleFilter}
-          statusFilter={statusFilter}
-          setStatusFilter={setStatusFilter}
-        />
+          <Paper p="md" radius="md" withBorder >
+            <Group justify="space-between" align="center">
+              <div>
+                <Text size="xs" c="dimmed" tt="uppercase" fw={700}>Approved Users</Text>
+                <Text fw={700} size="2rem" c="green">{approvedCount}</Text>
+              </div>
+              <ThemeIcon size="lg" radius="xl" color="green" variant="light">
+                <IconUserCheck size={20} />
+              </ThemeIcon>
+            </Group>
+          </Paper>
+        </SimpleGrid>
 
-        <UserTable users={users} onDelete={deleteUser} />
+        {/* User Table */}
+        <Paper withBorder radius="md" style={{ overflow: "hidden" }}>
+          <UserTable users={employees} />
+        </Paper>
       </Stack>
-
-      <UserModal
-        opened={modalOpened}
-        onClose={() => {
-          setModalOpened(false);
-          setEditingUser(null);
-        }}
-        onSubmit={handleAddUser}
-        initialData={editingUser}
-      />
     </Container>
   );
 };
