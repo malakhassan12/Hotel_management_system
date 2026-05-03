@@ -70,4 +70,26 @@ const mapRoomData = (room) => {
   };
 };
 
-export { mapRoomData };
+import { useEffect, useState } from "react";
+
+const useRoomImages = () => {
+  const [files, setFiles] = useState([]);
+  const [previewUrls, setPreviewUrls] = useState([]);
+
+  useEffect(() => {
+    const urls = files?.map((file) => URL.createObjectURL(file));
+    setPreviewUrls(urls);
+
+    return () => {
+      urls?.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [files]);
+
+  return {
+    files,
+    setFiles,
+    previewUrls,
+  };
+};
+
+export { mapRoomData, useRoomImages };

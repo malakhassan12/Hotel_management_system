@@ -63,6 +63,37 @@ const getImagesByRoom = async (roomId) => {
     return err;
   }
 };
+
+const addRoom = async (data) => {
+  try {
+    const res = await roomClient.post(`/add`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return res?.data;
+  } catch (err) {
+    return err;
+  }
+};
+
+const updateRoom = async ({ roomId, data }) => {
+  try {
+    const res = await roomClient.put(`/${roomId}`, data);
+    return res?.data;
+  } catch (err) {
+    return err;
+  }
+};
+
+const deleteRoom = async (roomId) => {
+  try {
+    const res = await roomClient.delete(`/${roomId}`);
+    return res?.data;
+  } catch (err) {
+    return err;
+  }
+};
 export {
   getRoom,
   getAllRooms,
@@ -71,4 +102,7 @@ export {
   getCountAvailableRoom,
   getCountMantenanceRoom,
   getImagesByRoom,
+  addRoom,
+  updateRoom,
+  deleteRoom,
 };
