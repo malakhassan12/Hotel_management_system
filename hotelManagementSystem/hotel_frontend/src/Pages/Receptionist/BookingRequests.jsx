@@ -1,4 +1,3 @@
-import { useState } from "react";
 
 // ******************************** Mantline UI ********************************
 
@@ -11,8 +10,6 @@ import BookingRequestTable from "../../Components/Table/Receptionist/BookingRequ
 import SearchBySelect from "../../Components/Search/SearchBySelect";
 
 const BookingRequests = () => {
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [searchQuery, setSearchQuery] = useState("");
 
   return (
     <div>
@@ -27,14 +24,7 @@ const BookingRequests = () => {
       <BookingPerformanceCards />
       <Space h={"md"} />
 
-      <SearchBySelect
-        statusValue={statusFilter}
-        onStatusChange={setStatusFilter}
-        searchValue={searchQuery}
-        onSearchChange={(e) => setSearchQuery(e.target.value)}
-        showSearch={true}
-      />
-      <Space h={"md"} />
+     
 
       <BookingRequestTable />
     </div>

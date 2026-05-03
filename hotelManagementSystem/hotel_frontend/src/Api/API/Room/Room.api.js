@@ -1,4 +1,4 @@
-import roomClient from "../../Client/User/Room.client";
+import roomClient from "../../Client/Room/Room.client";
 
 const getRoom = async (roomId) => {
   try {
@@ -28,4 +28,47 @@ const editRoomStatus = async ({ roomId, status }) => {
     return err;
   }
 };
-export { getRoom, getAllRooms, editRoomStatus };
+
+const getStatusOfRooms = async () => {
+  try {
+    const res = await roomClient.get(`/stats`);
+    return res?.data;
+  } catch (err) {
+    return err;
+  }
+};
+
+const getCountAvailableRoom = async () => {
+  try {
+    const res = await roomClient.get(`/CountAvailableRoom`);
+    return res?.data;
+  } catch (err) {
+    return err;
+  }
+};
+
+const getCountMantenanceRoom = async () => {
+  try {
+    const res = await roomClient.get(`/CountMantenanceRoom`);
+    return res?.data;
+  } catch (err) {
+    return err;
+  }
+};
+const getImagesByRoom = async (roomId) => {
+  try {
+    const res = await roomClient.get(`/${roomId}/images`);
+    return res?.data;
+  } catch (err) {
+    return err;
+  }
+};
+export {
+  getRoom,
+  getAllRooms,
+  editRoomStatus,
+  getStatusOfRooms,
+  getCountAvailableRoom,
+  getCountMantenanceRoom,
+  getImagesByRoom,
+};

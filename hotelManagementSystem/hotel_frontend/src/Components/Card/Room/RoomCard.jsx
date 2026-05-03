@@ -29,7 +29,7 @@ import useRoomMutations from "../../../Hooks/Room/useRoomMutations";
 import getStatusConfigRoom from "../../../Utils/Room/getStatusConfigRoom";
 
 const RoomCard = ({ item, role = "CUSTOMER" }) => {
-  console.log(item.status)
+  console.log(item.status);
   const [currentStatus, setCurrentStatus] = useState(
     item.status || "Available",
   );
@@ -43,8 +43,6 @@ const RoomCard = ({ item, role = "CUSTOMER" }) => {
 
   const defaultImage =
     "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=400&h=250&fit=crop";
-
- 
 
   const handleStatusChange = (newStatus) => {
     setCurrentStatus(newStatus);
@@ -95,7 +93,7 @@ const RoomCard = ({ item, role = "CUSTOMER" }) => {
       <Badge
         size="sm"
         radius="xl"
-        color={getStatusConfigRoom(item.status).color|| "gray"}
+        color={getStatusConfigRoom(item.status).color || "gray"}
         variant="light"
         style={{
           position: "absolute",
@@ -133,7 +131,6 @@ const RoomCard = ({ item, role = "CUSTOMER" }) => {
         </Text>
 
         <Group justify="space-between">
-         
           <Group gap="xs">
             <IconUsers size={14} />
             <Text size="xs" c="dimmed">
@@ -154,11 +151,12 @@ const RoomCard = ({ item, role = "CUSTOMER" }) => {
 
         <Group justify="space-between" mt="sm">
           <Button
-            component={Link}
-            to={Favorite ? `/customer/${item.id}` : `${item.id}`}
+            // component={Link}
+            // to={Favorite ? `/customer/${item.id}` : `${item.id}`}
             variant="light"
             color="primary"
             size="sm"
+            onClick={() => navigate(`/receptionist/rooms/${item.id}`)}
           >
             View Details
           </Button>

@@ -4,9 +4,10 @@ import { getRoom } from "../../Api/API/Room/Room.api";
 import dayjs from "dayjs";
 
 const UseGetUsersForBooking = (bookings = []) => {
+    const safeBookings = Array.isArray(bookings) ? bookings : [];
   /* ================= USERS ================= */
   const usersQueries = useQueries({
-    queries: bookings?.map((booking) => ({
+    queries: safeBookings?.map((booking) => ({
       queryKey: ["user", booking.userId],
       queryFn: () => getUser(booking.userId), 
       enabled: !!booking.userId,
@@ -15,7 +16,7 @@ const UseGetUsersForBooking = (bookings = []) => {
 
   /* ================= ROOMS ================= */
   const roomsQueries = useQueries({
-    queries: bookings?.map((booking) => ({
+    queries: safeBookings?.map((booking) => ({
       queryKey: ["room", booking.roomId],
       queryFn: () => getRoom(booking.roomId), 
       enabled: !!booking.roomId,
@@ -23,7 +24,7 @@ const UseGetUsersForBooking = (bookings = []) => {
   });
 
   /* ================= MERGE ================= */
-  const mappedData = bookings.map((booking, index) => {
+  const mappedData = safeBookings.map((booking, index) => {
     const userData = usersQueries[index]?.data;
     const roomData = roomsQueries[index]?.data;
 

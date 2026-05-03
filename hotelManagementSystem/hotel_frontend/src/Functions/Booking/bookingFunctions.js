@@ -47,9 +47,9 @@ export const mapBookingData = (booking) => {
   );
 
   return {
-    id: booking.id || `BK-${booking.bookingId}`,
-    bookingId: booking.id,
-    customerId: booking.customer?.id,
+    id: booking?.id || `BK-${booking.bookingId}`,
+    bookingId: booking?.id,
+    customerId: booking?.userId,
     customer: booking?.customer || `Customer ${booking.userId}`,
     roomId: booking.roomId,
     room: booking?.room || `Room ${booking.roomId}`,
