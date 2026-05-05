@@ -93,7 +93,7 @@ const ManageRoomModal = ({
       console.log(pair[0], pair[1]);
     }
 
-      if (mode === "edit") {
+    if (mode === "edit") {
       onSubmit(formData);
     } else {
       onSubmit(formData);
@@ -133,13 +133,15 @@ const ManageRoomModal = ({
         <Divider />
         {/* Image Upload Section */}
 
-        <ImagesSection
-          existingImages={existingImages}
-          setExistingImages={setExistingImages}
-          files={files}
-          setFiles={setFiles}
-          previewUrls={previewUrls}
-        />
+        {mode == "create" && (
+          <ImagesSection
+            existingImages={existingImages}
+            setExistingImages={setExistingImages}
+            files={files}
+            setFiles={setFiles}
+            previewUrls={previewUrls}
+          />
+        )}
 
         {/* Main Form Fields */}
         <Paper withBorder p="md" radius="md">
@@ -148,10 +150,11 @@ const ManageRoomModal = ({
               Room Information
             </Text>
 
-            <TextInput
+            <NumberInput
               label="Room Number"
               placeholder="e.g., 101, 202, 305"
               required
+              min={1}
               {...form.getInputProps("roomNumber")}
             />
 
@@ -174,7 +177,7 @@ const ManageRoomModal = ({
                   //   { value: "DELUXE", label: "Deluxe" },
                   // ]}
 
-                   data={roomTypes}
+                  data={roomTypes}
                   {...form.getInputProps("roomType")}
                 />
               </Grid.Col>
@@ -278,6 +281,7 @@ const ManageRoomModal = ({
             color={mode === "create" ? "blue" : "green"}
             size="md"
             disabled={isLoading}
+            loading={isLoading}
             leftSection={isLoading && <Loader size="xs" color="white" />}
           >
             {mode === "create"

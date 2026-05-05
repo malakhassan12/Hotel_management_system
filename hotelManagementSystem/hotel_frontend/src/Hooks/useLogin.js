@@ -50,6 +50,12 @@ export const useLogin = () => {
 
       return { success: true };
     } catch (err) {
+      notifications.show({
+        title: "Error",
+        message:
+          err?.response?.data?.message || err?.message || "Failed to Login  ",
+        color: "red",
+      });
       const errorMsg =
         err.response?.data?.message || "Invalid email or password";
       setServerError(errorMsg);

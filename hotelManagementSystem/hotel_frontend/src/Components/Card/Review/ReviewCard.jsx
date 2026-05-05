@@ -195,7 +195,7 @@ const ReviewCard = ({ roomId }) => {
                     backgroundColor:
                       index % 2 === 0
                         ? "var(--mantine-color-body)"
-                        : "var(--mantine-color-gray-0)",
+                        : "var(--mantine-color-pink-1)",
                   }}
                 >
                   {/* Review Header */}
