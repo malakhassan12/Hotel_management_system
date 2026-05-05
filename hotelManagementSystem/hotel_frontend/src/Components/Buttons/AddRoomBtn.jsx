@@ -29,7 +29,11 @@ const AddRoomBtn = () => {
         mode={"create"}
         onSubmit={handleSubmit}
       />
-      <Button leftSection={<IconCircleDashedPlus size={14} />} onClick={open}>
+      <Button
+        leftSection={<IconCircleDashedPlus size={14} />}
+        onClick={open}
+        loading={addRoomMutation.isPending}
+      >
         Add Room
       </Button>
     </div>

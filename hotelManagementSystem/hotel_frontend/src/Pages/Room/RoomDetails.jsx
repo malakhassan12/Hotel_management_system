@@ -80,7 +80,11 @@ const RoomDetails = () => {
       <Box>
         <Grid gutter="xl">
           <Grid.Col
-            span={role === roles[2] ? { base: 12 } : { base: 12, lg: 8 }}
+            span={
+              role === roles[2] || role === roles[0]
+                ? { base: 12 }
+                : { base: 12, lg: 8 }
+            }
           >
             <Stack gap="xl">
               {/* Header with Category and Rating */}
@@ -264,7 +268,8 @@ const RoomDetails = () => {
           <Grid.Col
             span={{ base: 12, lg: 4 }}
             style={{
-              display: role === roles[2] ? "none" : "block",
+              display:
+                role === roles[2] || role === roles[0] ? "none" : "block",
             }}
           >
             <Box
