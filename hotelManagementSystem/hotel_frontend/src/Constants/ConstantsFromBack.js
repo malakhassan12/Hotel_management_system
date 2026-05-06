@@ -20,7 +20,6 @@ const roomStatus = ["AVAILABLE", "Booked", "MAINTENANCE"];
       FAMILY: "Family Suite",
     };
 
-
 const roomTypes = [
   { value: "SINGLE", label: "Single Room" },
   { value: "DOUBLE", label: "Double Room" },
@@ -30,3 +29,6 @@ const roomTypes = [
 ];
 
 export { roles, bookingStatus, roomStatus , roomTypeMap , roomTypes };
+
+    
+

@@ -78,7 +78,7 @@ const [selectedBooking, setSelectedBooking] = useState(null);
   close={() => setOpened(false)}
   invoice={{
     invoiceNumber: `INV-${selectedBooking?.id}`,
-    bookingId: selectedBooking?.bookingId,
+    bookingId: selectedBooking?.bookingId||selectedBooking?.id,
     customerName: "Customer",
     checkIn: selectedBooking?.checkIn,
     checkOut: selectedBooking?.checkOut,
