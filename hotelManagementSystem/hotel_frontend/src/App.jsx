@@ -49,6 +49,8 @@ const CheckOutManagement = lazy(
   () => import("./Pages/Receptionist/CheckOutManagement"),
 );
 
+const CreatePayment = lazy(() => import("./Pages/Customer/CreatePayment"));
+
 // Admin Pages
 const AdminDashBoard = lazy(() => import("./Pages/Admin/AdminDashBoard"));
 const ManageRooms = lazy(() => import("./Pages/Admin/ManageRooms"));
@@ -81,13 +83,20 @@ function App() {
           <Route element={<ProtectedRoute allowedRoles={[roles[1]]} />}>
             <Route path="/customer" element={<CustomerLayout />}>
               <Route index element={<BrowseRooms />} />
+
+              <Route path="rooms">
+                <Route path=":roomId" element={<RoomDetails />}></Route>
+                <Route path="book-room/:roomId" element={<BookRoom />} />
+              </Route>
+              <Route
+                path="create-payment/:roomId"
+                element={<CreatePayment />}
+              />
               <Route path="reviews" element={<RoomReviews />} />
               {/* <Route path="rooms/:roomId" element={<RoomDetails />} /> */}
 
-              
-              <Route path="rooms/:roomId" element={<RoomDetails />} />
-              <Route path="book-room/:roomId" element={<BookRoom />} />
               <Route path="favourites" element={<Favourites />} />
+
               <Route path="my-bookings" element={<MyBookings />} />
               {/* <Route path="check-out/:bookingId" element={<CheckOut />} /> */}
               <Route path="check-in/:bookingId" element={<CheckIn />} />

@@ -18,12 +18,12 @@ const CustomerNavLinks = [
     path: "favourites",
     icon: "IconHeart",
   },
-  {
-    id: "reviews",
-    label: "Reviews",
-    path: "reviews",
-    icon: "IconStars",
-  },
+  // {
+  //   id: "reviews",
+  //   label: "Reviews",
+  //   path: "reviews",
+  //   icon: "IconStars",
+  // },
   // {
   //   id: "settings",
   //   label: "Settings",

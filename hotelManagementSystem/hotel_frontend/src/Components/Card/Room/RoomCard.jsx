@@ -221,12 +221,13 @@ const RoomCard = ({ item, role = "CUSTOMER" }) => {
                 )}
               </ActionIcon>
               <Button
-                onClick={() => navigate(`/customer/book-room/${item.id}`)}
+                onClick={() => navigate(`/customer/rooms/book-room/${item.id}`)}
                 variant="filled"
                 size="sm"
                 color="primary"
+                disabled={item.status !== roomStatus[0]}
               >
-                Book Now
+                {item.status === roomStatus[0] ? "Book Now" : "Not Available"}
               </Button>
             </Group>
           )}

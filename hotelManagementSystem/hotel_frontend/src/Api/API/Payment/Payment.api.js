@@ -1,12 +1,22 @@
 import paymentClient from "../../Client/Payment/Payment.client";
 
 const getPendingPayment = async () => {
-  try {
-    const res = await paymentClient.get("/PendingPayment");
-    return res?.data;
-  } catch (err) {
-    return err;
-  }
+  const res = await paymentClient.get("/PendingPayment");
+  return res?.data;
 };
 
-export { getPendingPayment };
+const createPayment = async ({bookingId, amount}) => {
+  const res = await paymentClient.post(
+    "/create",
+    {},
+    {
+      params: {
+        bookingId: bookingId,
+        amount: amount,
+      },
+    },
+  );
+  return res?.data;
+};
+
+export { getPendingPayment, createPayment };

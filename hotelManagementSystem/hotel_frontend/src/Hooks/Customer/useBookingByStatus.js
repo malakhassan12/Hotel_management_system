@@ -6,8 +6,8 @@ const useBookingsByStatus = (status) => {
   const { user } = useAuthStore();
 
   return useQuery({
-    queryKey: ["bookings", status, user?.id],
-    queryFn: () => getBookingsByStatus(user.id, status),
+    queryKey: ["bookings", status, user?.userId],
+    queryFn: () => getBookingsByStatus(user?.userId, status),
     enabled: !!user?.id && !!status,
   });
 };
