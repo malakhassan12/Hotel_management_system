@@ -7,9 +7,14 @@ import {
   editRoomStatus,
   updateRoom,
 } from "../../Api/API/Room/Room.api";
+import useNotificationMutations from "../Notification/useNotificationMutations";
+import useAuthStore from "../../Store/authStore";
 
 const useRoomMutations = () => {
   const queryClient = useQueryClient();
+  const { user } = useAuthStore();
+
+  const { sendNotiMutation } = useNotificationMutations();
 
   const updateRoomStatusMutation = useMutation({
     mutationFn: editRoomStatus,
@@ -17,6 +22,7 @@ const useRoomMutations = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(["rooms"]);
 
+      
       notifications.show({
         title: "Success",
         message: "Room updated successfully ✅",
@@ -42,6 +48,12 @@ const useRoomMutations = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(["rooms"]);
 
+      const noti = {
+        userId: user?.userId,
+        email: user?.email,
+        message: "Created Room successfully !!!!",
+      };
+      sendNotiMutation.mutate(noti);
       notifications.show({
         title: "Success",
         message: "Room added successfully ✅",
@@ -66,6 +78,13 @@ const useRoomMutations = () => {
 
     onSuccess: () => {
       queryClient.invalidateQueries(["rooms"]);
+
+      const noti = {
+        userId: user?.userId,
+        email: user?.email,
+        message: "Updated Room successfully !!!!",
+      };
+      sendNotiMutation.mutate(noti);
 
       notifications.show({
         title: "Success",
@@ -92,6 +111,12 @@ const useRoomMutations = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(["rooms"]);
 
+      const noti = {
+        userId: user?.userId,
+        email: user?.email,
+        message: "Deleted Room successfully !!!!",
+      };
+      sendNotiMutation.mutate(noti);
       notifications.show({
         title: "Success",
         message: "Room deleted successfully ✅",

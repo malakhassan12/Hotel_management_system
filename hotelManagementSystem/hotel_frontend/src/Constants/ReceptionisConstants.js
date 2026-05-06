@@ -31,7 +31,7 @@ const ReceptionistNavLinks = [
   },
   {
     id: "check",
-    label: "Check Managemnet",
+    label: "Check Management",
     path: "check-management",
     icon: "IconDoorEnter",
   },
@@ -47,12 +47,12 @@ const ReceptionistNavLinks = [
     path: "notifications",
     icon: "IconBell",
   },
-  {
-    id: "settings",
-    label: "Settings",
-    path: "settings",
-    icon: "IconSettings",
-  },
+  // {
+  //   id: "settings",
+  //   label: "Settings",
+  //   path: "settings",
+  //   icon: "IconSettings",
+  // },
   
   
 ];

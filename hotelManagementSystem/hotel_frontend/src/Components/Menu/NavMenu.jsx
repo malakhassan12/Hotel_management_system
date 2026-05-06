@@ -58,9 +58,7 @@ const NavMenu = () => {
 
       <Menu.Dropdown>
         <Menu.Label>Account</Menu.Label>
-        <Menu.Item leftSection={<IconSettings size={14} />}>
-          <Link to={"settings"}>Settings</Link>
-        </Menu.Item>
+
 
         <Menu.Divider />
 

@@ -1,85 +1,49 @@
 import bookingClient from "../../Client/Booking/Booking.client";
 
 const getAllBookings = async () => {
-  try {
-    const res = await bookingClient.get("/AllBookings");
-    return res?.data;
-  } catch (err) {
-    return err;
-  }
+  const res = await bookingClient.get("/AllBookings");
+  return res?.data;
 };
 
 const acceptBooking = async (bookingId) => {
-  try {
-    const res = await bookingClient.post(`/${bookingId}/accept`);
-    return res?.data;
-  } catch (err) {
-    return err;
-  }
+  const res = await bookingClient.post(`/${bookingId}/accept`);
+  return res?.data;
 };
 
 const rejectBooking = async (bookingId) => {
-  try {
-    const res = await bookingClient.post(`/${bookingId}/reject`);
-    return res?.data;
-  } catch (err) {
-    return err;
-  }
+  const res = await bookingClient.post(`/${bookingId}/reject`);
+  return res?.data;
 };
 
 const getPendingBookings = async () => {
-  try {
-    const res = await bookingClient.get(`/pending/count`);
-    return res?.data;
-  } catch (err) {
-    return err;
-  }
+  const res = await bookingClient.get(`/pending/count`);
+  return res?.data;
 };
 
 const getConfirmedBookings = async () => {
-  try {
-    const res = await bookingClient.get(`/confirmed/count`);
-    return res?.data;
-  } catch (err) {
-    return err;
-  }
+  const res = await bookingClient.get(`/confirmed/count`);
+  return res?.data;
 };
 
 const getRevenueBookings = async () => {
-  try {
-    const res = await bookingClient.get(`/revenue/total`);
-    console.log("getRevenueBookings"  , res)
-    return res?.data;
-  } catch (err) {
-    return err;
-  }
+  const res = await bookingClient.get(`/revenue/total`);
+  console.log("getRevenueBookings", res);
+  return res?.data;
 };
 
 const checkIn = async (bookingId) => {
-  try {
-    const res = await bookingClient.post(`/${bookingId}/checkin`);
-    return res?.data;
-  } catch (err) {
-    return err;
-  }
+  const res = await bookingClient.post(`/${bookingId}/checkin`);
+  return res?.data;
 };
 
 const checkOut = async (bookingId) => {
-  try {
-    const res = await bookingClient.post(`/${bookingId}/checkout`);
-    return res?.data;
-  } catch (err) {
-    return err;
-  }
+  const res = await bookingClient.post(`/${bookingId}/checkout`);
+  return res?.data;
 };
 
 const getRevenueByMonth = async () => {
-  try {
-    const res = await bookingClient.get(`/monthly-revenue`);
-    return res?.data;
-  } catch (err) {
-    return err;
-  }
+  const res = await bookingClient.get(`/monthly-revenue`);
+  return res?.data;
 };
 export {
   getAllBookings,

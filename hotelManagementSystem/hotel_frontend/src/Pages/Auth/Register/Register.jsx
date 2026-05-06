@@ -28,6 +28,7 @@ const Register = () => {
       password: "",
       Confirmpassword: "",
       role: roles[1],
+      phone: "",
     },
 
     validate: {
@@ -76,6 +77,18 @@ const Register = () => {
 
       role: (value) => {
         if (!value) return "Please select a role";
+        return null;
+      },
+
+      phone: (value) => {
+        if (!value) return "Phone is required";
+
+        const phoneRegex = /^01[0-9]{9}$/;
+
+        if (!phoneRegex.test(value)) {
+          return "Invalid phone number";
+        }
+
         return null;
       },
     },
@@ -163,6 +176,7 @@ const Register = () => {
               label="Username"
               size="md"
               radius="md"
+              placeholder="Confirm your Name"
               description="Can contain letters, numbers, and spaces"
               {...form.getInputProps("username")}
             />
@@ -172,6 +186,7 @@ const Register = () => {
               label="Email"
               size="md"
               radius="md"
+              placeholder="Confirm your Email"
               {...form.getInputProps("email")}
             />
 
@@ -180,6 +195,7 @@ const Register = () => {
               label="Password"
               size="md"
               radius="md"
+              placeholder="Confirm your Password"
               description="8+ chars with uppercase, lowercase, number & special character"
               {...form.getInputProps("password")}
             />
@@ -240,6 +256,13 @@ const Register = () => {
               {...form.getInputProps("role")}
             />
 
+            <TextInput
+              label="Phone number"
+              size="md"
+              radius="md"
+              placeholder="Confirm your Phone Number"
+              {...form.getInputProps("phone")}
+            />
             {/* Error Display - More Specific */}
             {serverError && (
               <Alert
