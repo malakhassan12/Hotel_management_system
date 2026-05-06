@@ -7,6 +7,7 @@ import LoadingPage from "./Pages/LoadingPage/LoadingPage";
 import ProtectedRoute from "./Routes/ProtectedRoute";
 import { roles } from "./Constants/ConstantsFromBack";
 import useAuthStore from "./Store/authStore";
+import ReviewsPerRoom from "./Pages/Room/ReviewsPerRoom";
 
 // Lazy Loading for Public Pages
 const NotFound = lazy(() => import("./Pages/NotFound"));
@@ -54,6 +55,7 @@ const ManageRooms = lazy(() => import("./Pages/Admin/ManageRooms"));
 const ManageUsers = lazy(() => import("./Pages/Admin/ManageUsers"));
 const Reviews = lazy(() => import("./Pages/Admin/Reviews"));
 const SystemLogs = lazy(() => import("./Pages/Admin/SystemLogs"));
+const ReviewsByAdmin = lazy(() => import("./Pages/Admin/ReviewsByAdmin"));
 
 function App() {
   const { role } = useAuthStore();
@@ -81,14 +83,16 @@ function App() {
               <Route index element={<BrowseRooms />} />
               <Route path="reviews" element={<RoomReviews />} />
               {/* <Route path="rooms/:roomId" element={<RoomDetails />} /> */}
-              <Route path=":roomId" element={<RoomDetails />} />
+
+              
+              <Route path="rooms/:roomId" element={<RoomDetails />} />
               <Route path="book-room/:roomId" element={<BookRoom />} />
               <Route path="favourites" element={<Favourites />} />
               <Route path="my-bookings" element={<MyBookings />} />
               {/* <Route path="check-out/:bookingId" element={<CheckOut />} /> */}
               <Route path="check-in/:bookingId" element={<CheckIn />} />
               {/* <Route path="check-in/:roomId" element={<CheckIn />} /> */}
-              <Route path="settings" element={<Settings />} />
+              {/* <Route path="settings" element={<Settings />} /> */}
               <Route path="notifications" element={<Notifications />} />
             </Route>
           </Route>
@@ -107,15 +111,12 @@ function App() {
               {/* <Route path="rooms/:roomId" element={<RoomDetails />} /> */}
               <Route path="room-management" element={<RoomsManagement />} />
 
-              <Route
-                path="check-in-management"
-                element={<CheckInManagement />}
-              />
-              <Route
+              <Route path="check-management" element={<CheckInManagement />} />
+              {/* <Route
                 path="check-out-management"
                 element={<CheckOutManagement />}
-              />
-              <Route path="settings" element={<Settings />} />
+              /> */}
+              {/* <Route path="settings" element={<Settings />} /> */}
               <Route path="notifications" element={<Notifications />} />
             </Route>
           </Route>
@@ -134,9 +135,11 @@ function App() {
                 <Route path=":roomId" element={<RoomDetails />} />
               </Route>
 
-              <Route path="reviews" element={<Reviews />} />
-              <Route path="system-logs" element={<SystemLogs />} />
-              <Route path="settings" element={<Settings />} />
+              <Route path="reviews" element={<ReviewsByAdmin />} />
+              <Route path="reviews/:roomId" element={<ReviewsPerRoom />} />
+
+              {/* <Route path="system-logs" element={<SystemLogs />} /> */}
+              {/* <Route path="settings" element={<Settings />} /> */}
               <Route path="notifications" element={<Notifications />} />
             </Route>
           </Route>

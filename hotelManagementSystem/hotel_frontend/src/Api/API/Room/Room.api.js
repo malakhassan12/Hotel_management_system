@@ -1,31 +1,78 @@
-import roomClient from "../../Client/User/Room.client";
+import roomClient from "../../Client/Room/Room.client";
 
 const getRoom = async (roomId) => {
-  try {
     const res = await roomClient.get(`/${roomId}`);
     return res?.data;
-  } catch (err) {
-    return err;
-  }
+  
 };
 
 const getAllRooms = async ({ page = 0, size = 10 }) => {
-  try {
     const res = await roomClient.get("", {
       params: { page, size },
     });
     return res?.data?.content;
-  } catch (err) {
-    return err;
-  }
+ 
 };
 
 const editRoomStatus = async ({ roomId, status }) => {
-  try {
     const res = await roomClient.patch(`/${roomId}/status?status=${status}`);
     return res?.data;
-  } catch (err) {
-    return err;
-  }
+ 
 };
-export { getRoom, getAllRooms, editRoomStatus };
+
+const getStatusOfRooms = async () => {
+    const res = await roomClient.get(`/stats`);
+    return res?.data;
+ 
+};
+
+const getCountAvailableRoom = async () => {
+    const res = await roomClient.get(`/CountAvailableRoom`);
+    return res?.data;
+ 
+};
+
+const getCountMantenanceRoom = async () => {
+    const res = await roomClient.get(`/CountMantenanceRoom`);
+    return res?.data;
+ 
+};
+const getImagesByRoom = async (roomId) => {
+    const res = await roomClient.get(`/${roomId}/images`);
+    return res?.data;
+ 
+};
+
+const addRoom = async (data) => {
+    const res = await roomClient.post(`/add`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return res?.data;
+ 
+};
+
+const updateRoom = async ({ roomId, data }) => {
+    const res = await roomClient.put(`/${roomId}`, data);
+    return res?.data;
+ 
+};
+
+const deleteRoom = async (roomId) => {
+    const res = await roomClient.delete(`/${roomId}`);
+    return res?.data;
+ 
+};
+export {
+  getRoom,
+  getAllRooms,
+  editRoomStatus,
+  getStatusOfRooms,
+  getCountAvailableRoom,
+  getCountMantenanceRoom,
+  getImagesByRoom,
+  addRoom,
+  updateRoom,
+  deleteRoom,
+};

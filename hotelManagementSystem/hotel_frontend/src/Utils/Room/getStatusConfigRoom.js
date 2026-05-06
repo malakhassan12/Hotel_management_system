@@ -11,7 +11,14 @@ import {
   IconCircleX,
 } from "@tabler/icons-react";
 
-const getStatusConfigRoom = (status) => {
+const getStatusConfigRoom = (status = "") => {
+  if (typeof status !== "string") {
+    return {
+      label: "Unknown",
+      color: "gray",
+      icon: IconExclamationCircle,
+    };
+  }
   switch (status?.toUpperCase()) {
     case "AVAILABLE":
       return {

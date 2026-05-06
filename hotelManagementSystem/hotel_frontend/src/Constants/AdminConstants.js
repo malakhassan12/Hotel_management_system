@@ -35,23 +35,23 @@ const AdminNavLinks = [
     path: "reviews",
     icon: "IconStars",
   },
-  {
-    id: "system-logs",
-    label: "System Logs",
-    path: "system-logs",
-    icon: "IconLogs",
-  },
+  // {
+  //   id: "system-logs",
+  //   label: "System Logs",
+  //   path: "system-logs",
+  //   icon: "IconLogs",
+  // },
   {
     id: "notification",
     label: "Notifications",
     path: "notifications",
     icon: "IconBell",
   },
-  {
-    id: "settings",
-    label: "Settings",
-    path: "settings",
-    icon: "IconSettings",
-  },
+  // {
+  //   id: "settings",
+  //   label: "Settings",
+  //   path: "settings",
+  //   icon: "IconSettings",
+  // },
 ];
 export { AdminNavLinks };

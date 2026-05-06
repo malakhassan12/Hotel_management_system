@@ -1,4 +1,4 @@
-import { Select, TextInput,  Box, Text, Grid } from "@mantine/core";
+import { Select, TextInput, Box, Text, Grid } from "@mantine/core";
 import { IconFilter, IconSearch } from "@tabler/icons-react";
 import { bookingStatus } from "../../Constants/ConstantsFromBack";
 
@@ -19,9 +19,9 @@ const SearchBySelect = ({
         {showSearch && (
           <Grid.Col span={{ base: 12, sm: 6, md: 8 }}>
             <TextInput
-              placeholder="Search by customer name, booking ID, or room number..."
+              placeholder="Search..."
               value={searchValue}
-              onChange={onSearchChange}
+              onChange={(e) => onSearchChange(e.currentTarget.value)}
               leftSection={<IconSearch size={16} />}
               radius="md"
               size="md"
@@ -34,7 +34,7 @@ const SearchBySelect = ({
             placeholder="Filter by status"
             value={statusValue}
             onChange={onStatusChange}
-            data={bookingStatus}
+            data={["all", ...bookingStatus]}
             clearable
             leftSection={<IconFilter size={16} />}
             radius="md"

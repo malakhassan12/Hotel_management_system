@@ -10,6 +10,7 @@ import {
   Avatar,
   Loader,
   Center,
+  Space,
 } from "@mantine/core";
 // ******************************** Icons ********************************
 import {
@@ -27,27 +28,51 @@ import Loading from "../../Loader/Loading";
 import Error from "../../Loader/Error";
 import NoData from "../../Empty/NoData";
 import { mapBookingData } from "../../../Functions/Booking/bookingFunctions";
+import useSearchStore from "../../../Store/useSearchStore";
+import SearchBySelect from "../../Search/SearchBySelect";
 
 const BookingRequestTable = () => {
-  const { data = [], isLoading, error } = useGetAllBookings();
+  const { data: res = [], isLoading, error } = useGetAllBookings();
 
+  const safeData = Array.isArray(res) ? res : [];
+  const { statusFilter, searchQuery, setStatusFilter, setSearchQuery } =
+    useSearchStore();
+
+  const data = safeData || [];
   const {
     data: finalData = [],
     isLoading: isLoadingFinal,
     error: errorFinal,
   } = UseGetUsersForBooking(data || []);
 
+  console.log("RES:", res);
+  console.log("TYPE:", typeof res);
+
   console.log(finalData);
 
- 
-
-
-  console.log(data , "Data")
   // Transform API data to table rows
-  const tableRows =
+  const tableRows2 =
     Array.isArray(finalData) && finalData.length > 0
       ? finalData.map((booking) => mapBookingData(booking))
       : [];
+
+  const tableRows = tableRows2.filter((item) => {
+    const matchStatus =
+      statusFilter === "all" ||
+      item.status?.toLowerCase() === statusFilter?.toLowerCase();
+
+    const matchSearch =
+      searchQuery === "" ||
+      item?.customer?.username
+        ?.toLowerCase()
+        .includes(searchQuery?.toLowerCase()) ||
+      item?.id?.toString().includes(searchQuery) ||
+      item?.room?.roomType?.toLowerCase().includes(searchQuery);
+
+    return matchStatus && matchSearch;
+  });
+
+  console.log(data, "Data");
 
   // Loading state
   if (isLoading || isLoadingFinal) {
@@ -59,13 +84,17 @@ const BookingRequestTable = () => {
     return <Error name={"Booking"} error={error} />;
   }
 
-  // No data state
-  if (!tableRows.length) {
-    return <NoData name={"Booking"} />;
-  }
-
   return (
     <Box>
+      <SearchBySelect
+        statusValue={statusFilter}
+        onStatusChange={setStatusFilter}
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
+        showSearch={true}
+      />
+
+      <Space h={"md"} />
       <ScrollArea>
         <Table striped highlightOnHover withTableBorder>
           <Table.Thead>
@@ -83,9 +112,21 @@ const BookingRequestTable = () => {
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
-            {tableRows.map((row) => (
-              <BookingRow key={row?.id} row={row} />
-            ))}
+            {tableRows.length === 0 ? (
+              <Table.Tr>
+                <Table.Td colSpan={12}>
+                  <Center>
+                    <NoData name={"Booking"} />
+                  </Center>
+                </Table.Td>
+              </Table.Tr>
+            ) : (
+              <>
+                {tableRows.map((row) => (
+                  <BookingRow key={row?.id} row={row} />
+                ))}
+              </>
+            )}
           </Table.Tbody>
         </Table>
       </ScrollArea>

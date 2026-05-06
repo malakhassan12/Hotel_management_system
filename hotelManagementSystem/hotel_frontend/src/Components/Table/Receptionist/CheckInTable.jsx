@@ -1,6 +1,4 @@
-import { useState } from "react";
 // ******************************** Mantline UI ********************************
-
 import {
   Table,
   Text,
@@ -10,316 +8,191 @@ import {
   ActionIcon,
   ScrollArea,
   Box,
+  Loader,
+  Center,
+  Alert,
+  Pagination,
+  Stack,
+  Paper,
+  Title,
+  Space,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
 
 // ******************************** Icons ********************************
+import {
+  IconEye,
+  IconCheck,
+  IconX,
+  IconReceipt,
+  IconDoorEnter,
+  IconAlertCircle,
+  IconRefresh,
+  IconCalendar,
+  IconUsers,
+  IconPhone,
+  IconListCheck,
+} from "@tabler/icons-react";
 
-import { IconEye, IconCheck, IconX, IconReceipt } from "@tabler/icons-react";
-// ******************************** Compoenents ********************************
-
+// ******************************** Components ********************************
 import CustomerModal from "../../Modal/Customer/CustomerModal";
 import RoomModal from "../../Modal/Room/RoomModal";
 import BookingModal from "../../Modal/Booking/BookingModal";
+import CheckinRow from "./CheckinTableComponents/CheckinRow";
+import useGetAllBookings from "../../../Hooks/Employee/useGetAllBookings";
+import { useState } from "react";
+import NoData from "../../Empty/NoData";
+import Loading from "../../Loader/Loading";
+import { mapBookingData } from "../../../Functions/Booking/bookingFunctions";
+import Error from "../../Loader/Error";
+import UseGetUsersForBooking from "../../../Hooks/User/UseGetUsersForBooking";
+import SearchBySelect from "../../Search/SearchBySelect";
+import useSearchStore from "../../../Store/useSearchStore";
 
 const CheckInTable = () => {
-  // Booking Modal state
-  const [selectedBooking, setSelectedBooking] = useState(null);
+  const { data: res = [], isLoading, error } = useGetAllBookings();
+  const { statusFilter, searchQuery, setStatusFilter, setSearchQuery } =
+    useSearchStore();
 
-  const [opened, { open, close }] = useDisclosure(false);
+  const safeData = Array.isArray(res) ? res : [];
 
-  const [customerModalOpen, setCustomerModalOpen] = useState(false);
-  const [roomModalOpen, setRoomModalOpen] = useState(false);
-  const [selectedCustomer, setSelectedCustomer] = useState(null);
-  const [selectedRoom, setSelectedRoom] = useState(null);
+  const data = safeData || [];
+  const {
+    data: bookings = [],
+    isLoading: isLoadingFinal,
+    error: errorFinal,
+  } = UseGetUsersForBooking(data || []);
 
-  const checkins = [
-    {
-      id: "CHK001",
-      bookingId: "B004",
-      customer: {
-        name: "John Doe",
-        email: "john@example.com",
-        phone: "+1 234 567 8901",
-        idNumber: "A12345678",
-        nationality: "American",
-        address: "123 Main Street, New York, USA",
-        passportImage: "https://randomuser.me/api/portraits/men/1.jpg",
-      },
-      room: {
-        id: "R101",
-        number: "101",
-        type: "Executive Suite",
-        floor: 1,
-        price: "$250",
-        maxGuests: 2,
-        beds: "King Bed",
-        amenities: ["Free WiFi", "Air Conditioning", "Smart TV", "Mini Bar"],
-      },
-      checkInDate: "2026-04-06",
-      checkOutDate: "2026-04-09",
-      numberOfGuests: 2,
-      paymentStatus: "Paid",
-      totalAmount: "$600",
-      checkInStatus: "Checked-in",
-    },
-    {
-      id: "CHK002",
-      bookingId: "B005",
-      customer: {
-        name: "Sarah Ahmed",
-        email: "sarah@example.com",
-        phone: "+20 123 456 789",
-        idNumber: "E98765432",
-        nationality: "Egyptian",
-        address: "45 Nile Street, Cairo, Egypt",
-        passportImage: "https://randomuser.me/api/portraits/women/1.jpg",
-      },
-      room: {
-        id: "R204",
-        number: "204",
-        type: "Deluxe Suite",
-        floor: 2,
-        price: "$375",
-        maxGuests: 2,
-        beds: "Queen Bed",
-        amenities: ["Free WiFi", "Air Conditioning", "Smart TV", "Balcony"],
-      },
-      checkInDate: "2026-04-07",
-      checkOutDate: "2026-04-10",
-      numberOfGuests: 2,
-      paymentStatus: "Paid",
-      totalAmount: "$750",
-      checkInStatus: "Pending",
-    },
-    {
-      id: "CHK003",
-      bookingId: "B006",
-      customer: {
-        name: "Michael Smith",
-        email: "michael@example.com",
-        phone: "+44 20 7946 0138",
-        idNumber: "M45678901",
-        nationality: "British",
-        address: "12 Baker Street, London, UK",
-        passportImage: "https://randomuser.me/api/portraits/men/2.jpg",
-      },
-      room: {
-        id: "R310",
-        number: "310",
-        type: "Standard Room",
-        floor: 3,
-        price: "$180",
-        maxGuests: 1,
-        beds: "Single Bed",
-        amenities: ["Free WiFi", "Air Conditioning", "TV"],
-      },
-      checkInDate: "2026-04-07",
-      checkOutDate: "2026-04-08",
-      numberOfGuests: 1,
-      paymentStatus: "Unpaid",
-      totalAmount: "$180",
-      checkInStatus: "Pending",
-    },
-  ];
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "Checked-in":
-        return "green";
-      case "Checked-out":
-        return "blue";
-      case "Pending":
-        return "orange";
-      default:
-        return "gray";
-    }
-  };
+  console.log("API Bookings Data:", bookings);
 
-  const handleCustomerClick = (customer) => {
-    setSelectedCustomer(customer);
-    setCustomerModalOpen(true);
-  };
+  // Transform API data to table rows
+  const checkins =
+    Array.isArray(bookings) && bookings.length > 0
+      ? bookings.map((booking) => mapBookingData(booking))
+      : [];
 
-  const handleRoomClick = (room) => {
-    setSelectedRoom(room);
-    setRoomModalOpen(true);
-  };
+  // Filter only check-in ready bookings (pending or confirmed)
+  const checkinsReady = checkins.filter((item) => {
+    const matchStatus =
+      statusFilter === "all" ||
+      item.status?.toLowerCase() === statusFilter?.toLowerCase();
 
-  const handleConfirm = (checkin) => {
-    // Logic for confirm check-in
-    console.log("Confirmed:", checkin.id);
-  };
+    const matchSearch =
+      searchQuery === "" ||
+      item?.customer?.username
+        ?.toLowerCase()
+        .includes(searchQuery?.toLowerCase()) ||
+      item?.id?.toString().includes(searchQuery) ||
+      item?.room?.roomType?.toLowerCase().includes(searchQuery);
 
-  const handleReject = (checkin) => {
-    // Logic for reject check-in
-    console.log("Rejected:", checkin.id);
-  };
+    return matchStatus && matchSearch;
+  });
 
-  const rows = checkins.map((checkin) => (
-    <Table.Tr key={checkin.id}>
-      <Table.Td>
-        <Text
-          size="sm"
-          fw={500}
-          style={{
-            cursor: "pointer",
-            color: "var(--mantine-color-primary-6)",
-            textDecoration: "underline",
-          }}
-          onClick={() => {
-            setSelectedBooking(checkin.bookingDetails);
-            open();
-          }}
-        >
-          {checkin.bookingId}
-        </Text>
-      </Table.Td>
+  // Pagination
+  const totalPages = Math.ceil(checkinsReady.length / itemsPerPage);
+  const paginatedCheckins = checkinsReady.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
+  );
 
-      {/* باقي الأعمدة كما هي */}
-      <Table.Td>
-        <Group gap="sm">
-          <Avatar size="sm" radius="xl" color="primary">
-            {checkin.customer.name.charAt(0)}
-          </Avatar>
-          <div>
-            <Text
-              size="sm"
-              fw={500}
-              style={{
-                cursor: "pointer",
-                color: "var(--mantine-color-primary-6)",
-              }}
-              onClick={() => handleCustomerClick(checkin.customer)}
-            >
-              {checkin.customer.name}
-            </Text>
-            <Text size="xs" c="dimmed">
-              {checkin.customer.phone}
-            </Text>
-          </div>
-        </Group>
-      </Table.Td>
-
-      <Table.Td>
-        <Text
-          size="sm"
-          style={{ cursor: "pointer", color: "var(--mantine-color-primary-6)" }}
-          onClick={() => handleRoomClick(checkin.room)}
-        >
-          Room {checkin.room.number}
-        </Text>
-        <Text size="xs" c="dimmed">
-          {checkin.room.type}
-        </Text>
-      </Table.Td>
-
-      <Table.Td>
-        <Text size="sm">{checkin.checkInDate}</Text>
-        <Text size="xs" c="dimmed">
-          → {checkin.checkOutDate}
-        </Text>
-      </Table.Td>
-
-      <Table.Td ta="center">{checkin.numberOfGuests}</Table.Td>
-
-      <Table.Td>
-        <Text size="sm" fw={600}>
-          {checkin.totalAmount}
-        </Text>
-        <Badge
-          size="xs"
-          radius="xl"
-          color={checkin.paymentStatus === "Paid" ? "green" : "orange"}
-          variant="light"
-        >
-          {checkin.paymentStatus}
-        </Badge>
-      </Table.Td>
-
-      <Table.Td>
-        <Badge
-          size="md"
-          radius="xl"
-          color={getStatusColor(checkin.checkInStatus)}
-        >
-          {checkin.checkInStatus}
-        </Badge>
-      </Table.Td>
-
-      <Table.Td>
-        {checkin.checkInStatus === "Pending" ? (
-          <Group gap="xs">
-            <ActionIcon
-              size="sm"
-              variant="filled"
-              color="green"
-              onClick={() => handleConfirm(checkin)}
-            >
-              <IconCheck size={16} />
-            </ActionIcon>
-            <ActionIcon
-              size="sm"
-              variant="outline"
-              color="red"
-              onClick={() => handleReject(checkin)}
-            >
-              <IconX size={16} />
-            </ActionIcon>
-          </Group>
-        ) : (
-          <Group gap="xs">
-            <ActionIcon size="sm" variant="light" color="blue">
-              <IconEye size={16} />
-            </ActionIcon>
-            <ActionIcon size="sm" variant="light" color="gray">
-              <IconReceipt size={16} />
-            </ActionIcon>
-          </Group>
-        )}
-      </Table.Td>
-    </Table.Tr>
+  const rows = paginatedCheckins.map((checkin) => (
+    <CheckinRow key={checkin.id} checkin={checkin} />
   ));
+
+  if (isLoading || isLoadingFinal) {
+    return <Loading name={"Check"} />;
+  }
+
+  if (error || errorFinal) {
+    return <Error name={"Check"} error={error} />;
+  }
 
   return (
     <Box>
-      <ScrollArea>
-        <Table striped highlightOnHover withTableBorder withColumnBorders>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th>Check-In ID</Table.Th>
-              <Table.Th>Customer</Table.Th>
-              <Table.Th>Room</Table.Th>
-              <Table.Th>Dates</Table.Th>
-              <Table.Th ta="center">Guests</Table.Th>
-              <Table.Th>Payment</Table.Th>
-              <Table.Th>Status</Table.Th>
-              <Table.Th ta="center">Actions</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>{rows}</Table.Tbody>
-        </Table>
-      </ScrollArea>
-
-      {/* Modals */}
-      <CustomerModal
-        opened={customerModalOpen}
-        close={() => setCustomerModalOpen(false)}
-        customer={selectedCustomer}
+      <SearchBySelect
+        statusValue={statusFilter}
+        onStatusChange={setStatusFilter}
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
+        showSearch={true}
       />
 
-      <BookingModal
-        opened={opened}
-        close={close}
-        booking={selectedBooking}
-        type="check-in"
-      />
+      <Space h={"md"} />
+      <Paper withBorder radius="md" overflow="hidden">
+        <ScrollArea>
+          <Table
+            striped
+            highlightOnHover
+            withTableBorder
+            withColumnBorders
+            horizontalSpacing="md"
+            verticalSpacing="sm"
+          >
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th style={{ fontWeight: 600, fontSize: "13px" }}>
+                  Booking ID
+                </Table.Th>
+                <Table.Th style={{ fontWeight: 600, fontSize: "13px" }}>
+                  Customer
+                </Table.Th>
+                <Table.Th style={{ fontWeight: 600, fontSize: "13px" }}>
+                  Room
+                </Table.Th>
+                <Table.Th style={{ fontWeight: 600, fontSize: "13px" }}>
+                  Dates
+                </Table.Th>
+                <Table.Th
+                  ta="center"
+                  style={{ fontWeight: 600, fontSize: "13px" }}
+                >
+                  Guests
+                </Table.Th>
+                <Table.Th style={{ fontWeight: 600, fontSize: "13px" }}>
+                  Payment
+                </Table.Th>
+                <Table.Th style={{ fontWeight: 600, fontSize: "13px" }}>
+                  Status
+                </Table.Th>
+                <Table.Th
+                  ta="center"
+                  style={{ fontWeight: 600, fontSize: "13px" }}
+                >
+                  Actions
+                </Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
+              {checkinsReady.length === 0 ? (
+                <Table.Tr>
+                  <Table.Td colSpan={8}>
+                    <Center>
+                      <NoData name={"Check"} />
+                    </Center>
+                  </Table.Td>
+                </Table.Tr>
+              ) : (
+                <>{rows}</>
+              )}
+            </Table.Tbody>
+          </Table>
+        </ScrollArea>
+      </Paper>
 
-      <RoomModal
-        opened={roomModalOpen}
-        close={() => setRoomModalOpen(false)}
-        room={selectedRoom}
-      />
+      {totalPages > 1 && (
+        <Group justify="center" mt="xl">
+          <Pagination
+            total={totalPages}
+            value={currentPage}
+            onChange={setCurrentPage}
+            color="primary"
+            radius="md"
+            withEdges
+          />
+        </Group>
+      )}
     </Box>
   );
 };

@@ -20,14 +20,7 @@ export const useManageUsers = () => {
     });
   }, [users, search, roleFilter, statusFilter]);
 
-  const addUser = (newUser) => {
-    const userWithId = { ...newUser, id: `U${Date.now().toString().slice(-4)}` };
-    setUsers((prev) => [...prev, userWithId]);
-  };
-
-  const deleteUser = (id) => {
-    setUsers((prev) => prev.filter((user) => user.id !== id));
-  };
+ 
 
   return {
     users: filteredUsers,

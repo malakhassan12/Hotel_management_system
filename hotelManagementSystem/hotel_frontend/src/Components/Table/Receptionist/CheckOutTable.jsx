@@ -34,7 +34,6 @@ const CheckOutTable = () => {
   const [roomModalOpen, setRoomModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState(null);
 
-  // Invoice Modal state ✅ جديد
   const [invoiceModalOpen, setInvoiceModalOpen] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState(null);
 

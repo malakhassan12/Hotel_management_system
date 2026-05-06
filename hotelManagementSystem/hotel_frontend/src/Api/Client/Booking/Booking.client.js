@@ -12,6 +12,7 @@ const bookingClient = axios.create({
 bookingClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
+    console.log(token)
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -19,5 +20,21 @@ bookingClient.interceptors.request.use(
   },
   (error) => Promise.reject(error),
 );
+
+bookingClient.interceptors.response.use(
+  (response) => response, 
+  (error) => {
+    if (error.response && (error.response.status === 403 || error.response.status === 401)) {
+      console.log("Access Forbidden or Unauthorized! Redirecting to login...");
+
+      localStorage.removeItem("token");
+
+      window.location.href = "/login";
+    }
+
+    return Promise.reject(error);
+  }
+);
+
 
 export default bookingClient;

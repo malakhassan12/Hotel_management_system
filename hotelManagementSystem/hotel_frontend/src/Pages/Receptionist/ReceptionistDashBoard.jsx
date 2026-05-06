@@ -38,7 +38,7 @@ const ReceptionistDashBoard = () => {
 
       <Space h={"md"} />
 
-      <TodayActivityTimeline />
+      {/* <TodayActivityTimeline /> */}
     </div>
   );
 };
