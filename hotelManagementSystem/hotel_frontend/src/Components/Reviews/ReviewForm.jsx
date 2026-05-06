@@ -1,7 +1,7 @@
 import { Button, Stack, Textarea, Group, Title } from "@mantine/core";
 import { useState } from "react";
 import { IconStar } from "@tabler/icons-react";
-const ReviewForm = ({ roomName, onSubmit }) => {
+const ReviewForm = ({ onSubmit }) => {
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
 
@@ -9,9 +9,9 @@ const ReviewForm = ({ roomName, onSubmit }) => {
     e.preventDefault();
     if (!comment.trim()) return;
 
-    onSubmit({ rating, comment, roomName: roomName || "General" });
-    setComment("");
-    setRating(5);
+   onSubmit({ rating, comment });
+   setRating(5);
+   setComment("");
   };
 
   return (

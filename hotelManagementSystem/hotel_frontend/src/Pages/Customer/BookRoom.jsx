@@ -1,25 +1,20 @@
 import { Container, Title, Text, Stack, Grid, Button, Group } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
-
 import BookForm from "../../Components/Forms/BookForm";
 import BookingSummaryCard from "../../Components/Card/Booking/BookingSummaryCard";
-import { useBook } from "../../Hooks/useBook";
-
-
-
-
+import { useBook } from "../../Hooks/Customer/useBook";
 const BookRoom = () => {
   const navigate = useNavigate();
   
    
-  const { 
-   room,
+   const {
     formData,
     handleInputChange,
     handleSubmit,
     loadingSubmit,
-    nights,
-    totalPrice,} = useBook();
+    totalPrice,
+    room,
+  } = useBook();
 
 
 
@@ -38,19 +33,17 @@ const BookRoom = () => {
 
       <Grid gutter="xl">
         <Grid.Col span={{ base: 12, md: 7 }}>
-         <BookForm 
-  formData={formData}
-  onChange={handleInputChange}           
-  onSubmit={handleSubmit}
-  loading={loadingSubmit}
-  nights={nights}
-  totalPrice={totalPrice}
-  room={room}
-/>
+        <BookForm
+            formData={formData}
+            onChange={handleInputChange}
+            onSubmit={handleSubmit}
+            loading={loadingSubmit}
+            totalPrice={totalPrice}
+          />
         </Grid.Col>
 
         <Grid.Col span={{ base: 12, md: 5 }}>
-          <BookingSummaryCard room={room} totalPrice={totalPrice} nights={nights} />
+          <BookingSummaryCard room={room} totalPrice={totalPrice}  />
         </Grid.Col>
       </Grid>
     </Container>
