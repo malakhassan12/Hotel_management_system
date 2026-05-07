@@ -2,15 +2,15 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { notifications } from "@mantine/notifications";
 import { createBooking } from "../../Api/API/Booking/Bookings.api";
 import useAuthStore from "../../Store/authStore";
+import useNotificationMutations from "../Notification/useNotificationMutations";
 
- const useCreateBookingMutation = () => {
+const useCreateBookingMutation = () => {
   const queryClient = useQueryClient();
   const { user } = useAuthStore();
+  const { sendNotiMutation } = useNotificationMutations();
 
   return useMutation({
     mutationFn: (variables) => {
-      
-
       return createBooking({
         ...variables,
         userId: user?.userId,
@@ -19,6 +19,13 @@ import useAuthStore from "../../Store/authStore";
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["bookings", user?.userId] });
+
+      const noti = {
+        userId: user?.userId,
+        email: user?.email,
+        message: "Your booking has been created successfully !!!!",
+      };
+      sendNotiMutation.mutate(noti);
 
       notifications.show({
         title: "Booking Confirmed!",
@@ -42,4 +49,4 @@ import useAuthStore from "../../Store/authStore";
   });
 };
 
-export default  useCreateBookingMutation;
+export default useCreateBookingMutation;

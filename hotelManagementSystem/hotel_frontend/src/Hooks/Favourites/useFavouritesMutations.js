@@ -1,29 +1,31 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import {
+  addToFavourites,
+  clearFavourites,
+  deleteItemFromFavourites,
+} from "../../Api/API/Favourites/Favourites.api";
 import useAuthStore from "../../Store/authStore";
-import { createPayment, makeConfirm , stripeConfirm } from "../../Api/API/Payment/Payment.api";
 import { notifications } from "@mantine/notifications";
 import useNotificationMutations from "../Notification/useNotificationMutations";
 
-const usePaymentMutations = () => {
-  const queryClient = useQueryClient();
+const useFavouritesMutations = () => {
   const { user } = useAuthStore();
 
   const { sendNotiMutation } = useNotificationMutations();
 
-  const createPaymentMutation = useMutation({
-    mutationFn: createPayment,
-
+  const addToFavouritesMutation = useMutation({
+    mutationFn: addToFavourites,
     onSuccess: () => {
-      queryClient.invalidateQueries(["notifications", user?.userId]);
       const noti = {
         userId: user?.userId,
         email: user?.email,
-        message: "Maked Payment successfully !!!!",
+        message: "You added room Favourites successfully!! ",
       };
       sendNotiMutation.mutate(noti);
+
       notifications.show({
         title: "Success",
-        message: "Maked Payment successfully ✅",
+        message: "You added room Favourites successfully ✅",
         color: "green",
       });
     },
@@ -34,26 +36,25 @@ const usePaymentMutations = () => {
         message:
           err?.response?.data?.message ||
           err?.message ||
-          "Failed to Maked Payment  ",
+          "Failed to added room Favourites successfully",
         color: "red",
       });
     },
   });
 
-  const makeConfirmMutation = useMutation({
-    mutationFn: makeConfirm,
-
+  const deleteItemFromFavouritesMutation = useMutation({
+    mutationFn: deleteItemFromFavourites,
     onSuccess: () => {
-      queryClient.invalidateQueries(["notifications", user?.userId]);
       const noti = {
         userId: user?.userId,
         email: user?.email,
-        message: "Maked Confirmed Payment successfully !!!!",
+        message: "You deleted room Favourites successfully!! ",
       };
       sendNotiMutation.mutate(noti);
+
       notifications.show({
         title: "Success",
-        message: "Maked Confirmed Payment successfully ✅",
+        message: "You deleted room Favourites successfully ✅",
         color: "green",
       });
     },
@@ -64,26 +65,25 @@ const usePaymentMutations = () => {
         message:
           err?.response?.data?.message ||
           err?.message ||
-          "Failed to Maked Payment  ",
+          "Failed to deleted room Favourites successfully",
         color: "red",
       });
     },
   });
 
-  const confirmStripeMutation = useMutation({
-    mutationFn: stripeConfirm,
-
+  const clearFavouritesMutation = useMutation({
+    mutationFn: clearFavourites,
     onSuccess: () => {
-      queryClient.invalidateQueries(["notifications", user?.userId]);
       const noti = {
         userId: user?.userId,
         email: user?.email,
-        message: "Maked Confirmed Payment successfully !!!!",
+        message: "You clear your Favourites successfully!! ",
       };
       sendNotiMutation.mutate(noti);
+
       notifications.show({
         title: "Success",
-        message: "Maked Confirmed Payment successfully ✅",
+        message: "You clear your Favourites successfully ✅",
         color: "green",
       });
     },
@@ -94,19 +94,17 @@ const usePaymentMutations = () => {
         message:
           err?.response?.data?.message ||
           err?.message ||
-          "Failed to Maked Payment  ",
+          "Failed to clear your Favourites successfully",
         color: "red",
       });
     },
   });
-
-
 
   return {
-    createPaymentMutation,
-    makeConfirmMutation,
-    confirmStripeMutation
+    addToFavouritesMutation,
+    deleteItemFromFavouritesMutation,
+    clearFavouritesMutation,
   };
 };
 
-export default usePaymentMutations;
+export default useFavouritesMutations;

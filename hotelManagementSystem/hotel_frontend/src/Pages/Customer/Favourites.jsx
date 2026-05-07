@@ -1,18 +1,23 @@
 import { Container, Title, Text, SimpleGrid, Stack } from "@mantine/core";
 
-import useFavoritesStore from "../../Store/favoritesStore"
+// import useFavoritesStore from "../../Store/favoritesStore";
 import RoomCard from "../../Components/Card/Room/RoomCard";
+import useGetAllFavourites from "../../Hooks/Favourites/useGetAllFavourites";
+import useAuthStore from "../../Store/authStore";
 
 const Favourites = () => {
-  const { favorites } = useFavoritesStore();
+  // const { favorites } = useFavoritesStore();
+
+  const { user } = useAuthStore();
+  const { data } = useGetAllFavourites(user?.userId);
+
+  const favorites = Array.isArray(data) ? data : [];
 
   return (
     <Container size="xl" py="md">
       <Stack gap="xs" mb="lg">
         <Title order={2}>My Favorites</Title>
-        <Text c="dimmed">
-          Your saved rooms for future booking
-        </Text>
+        <Text c="dimmed">Your saved rooms for future booking</Text>
       </Stack>
 
       {favorites.length === 0 ? (
@@ -20,16 +25,9 @@ const Favourites = () => {
           No favorite rooms yet ❤️
         </Text>
       ) : (
-        <SimpleGrid
-          cols={{ base: 1, sm: 2, lg: 3 }}
-          spacing="lg"
-        >
+        <SimpleGrid cols={{ base: 1, sm: 2, lg: 3 }} spacing="lg">
           {favorites.map((room) => (
-            <RoomCard
-              key={room.id}
-              item={room}
-              role="customer"
-            />
+            <RoomCard key={room.id} item={room} role="customer" />
           ))}
         </SimpleGrid>
       )}

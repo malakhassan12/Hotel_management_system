@@ -29,7 +29,7 @@ import InitialBox from "../../Components/Box/InitialBox";
 const MyBookings = () => {
   const [activeTab, setActiveTab] = useState("all");
 
-  // Fetch all bookings
+  // Fetch all bookings (this is your base data)
   const {
     data: historyQuery,
     isLoading: isLoadingAll,
@@ -37,38 +37,9 @@ const MyBookings = () => {
   } = useBookingHistory();
 
   console.log(historyQuery);
-  // Fetch bookings by status based on active tab
-  // const { data: statusData, isLoading: isLoadingStatus, error: errorStatus } = useBookingsByStatus(
-  //   activeTab !== "all" ? getStatusValue(activeTab) : null
-  // );
 
-  // Helper function to map tab to status value
-  // function getStatusValue(tab) {
-  //   const statusMap = {
-  //     pending: "PENDING",
-  //     confirmed: "ACCEPTED",
-  //     "checked-in": "CHECKED_IN",
-  //   };
-  //   return statusMap[tab];
-  // }
-
-  // Get data based on active tab
-  const getBookingsData = () => {
-    if (activeTab === "all") {
-      return historyQuery || [];
-    }
-    // return statusData || [];
-    return [];
-  };
-
-  // Get loading state
-
-  // Get error state
-
-  const bookingsData = getBookingsData();
-
-  // Transform bookings to table format (without status)
-  const bookings = bookingsData.map((b) => ({
+  // Transform all bookings to table format
+  const allBookings = (historyQuery || []).map((b) => ({
     id: b.id,
     room: `Room ${b.roomId}`,
     checkIn: new Date(b.check_in_Date).toLocaleDateString(),
@@ -78,12 +49,13 @@ const MyBookings = () => {
     phone: b.phone,
     paymentStatus: b.paymentStatus,
     createdAt: b.created_at,
-    status : b.status
+    status: b.status,
+    roomId: b.roomId,
   }));
 
-  // Filter bookings for specific status tabs
+  // Filter bookings based on active tab
   const getFilteredBookings = () => {
-    if (activeTab === "all") return bookings;
+    if (activeTab === "all") return allBookings;
 
     const statusMap = {
       pending: "PENDING",
@@ -92,21 +64,9 @@ const MyBookings = () => {
     };
 
     const targetStatus = statusMap[activeTab];
-    const originalBookings = bookingsData.filter(
-      (b) => b.status === targetStatus,
-    );
-
-    return originalBookings.map((b) => ({
-      id: b.id,
-      room: `Room ${b.roomId}`,
-      checkIn: new Date(b.check_in_Date).toLocaleDateString(),
-      checkOut: new Date(b.check_out_Date).toLocaleDateString(),
-      guests: b.totalGuests || 2,
-      total: b.totalPrice,
-      phone: b.phone,
-      paymentStatus: b.paymentStatus,
-      createdAt: b.created_at,
-    }));
+    
+    // Filter the already transformed bookings
+    return allBookings.filter((booking) => booking.status === targetStatus);
   };
 
   const filteredBookings = getFilteredBookings();
@@ -123,19 +83,19 @@ const MyBookings = () => {
 
   // Get counts for tabs
   const getTabCounts = () => {
-    const allBookings = historyQuery || [];
-    const pendingCount = allBookings.filter(
-      (b) => b.status === "PENDING",
+    const allBookingsCount = historyQuery || [];
+    const pendingCount = allBookingsCount.filter(
+      (b) => b.status === "PENDING"
     ).length;
-    const confirmedCount = allBookings.filter(
-      (b) => b.status === "ACCEPTED",
+    const confirmedCount = allBookingsCount.filter(
+      (b) => b.status === "ACCEPTED"
     ).length;
-    const checkedInCount = allBookings.filter(
-      (b) => b.status === "CHECKED_IN",
+    const checkedInCount = allBookingsCount.filter(
+      (b) => b.status === "CHECKED_IN"
     ).length;
 
     return {
-      all: allBookings.length,
+      all: allBookingsCount.length,
       pending: pendingCount,
       confirmed: confirmedCount,
       "checked-in": checkedInCount,
@@ -145,6 +105,7 @@ const MyBookings = () => {
   const counts = getTabCounts();
 
   return (
+    // ... rest of your JSX remains the same
     <Box
       style={{
         minHeight: "100vh",
@@ -282,5 +243,6 @@ const MyBookings = () => {
     </Box>
   );
 };
+
 
 export default MyBookings;

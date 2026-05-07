@@ -28,6 +28,7 @@ import { useForm } from "@mantine/form";
 import useCreateBookingMutation from "../../Hooks/Customer/useCreateBookingMutations";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import SendPaymentIntentBtn from "../Buttons/SendPaymentIntentBtn";
 const BookForm = ({ roomId }) => {
   const { data = {} } = useGetRoom(roomId);
 
@@ -86,7 +87,7 @@ const BookForm = ({ roomId }) => {
 
     return { days, total };
   };
-  const { mutate, isLoading } = useCreateBookingMutation();
+  const { mutate, isLoading, isSuccess } = useCreateBookingMutation();
 
   const { total: totalPrice } = calculateTotal();
 
@@ -248,25 +249,12 @@ const BookForm = ({ roomId }) => {
                 radius="md"
                 leftSection={<IconCreditCard size={20} />}
                 loading={isLoading}
+                disabled={isSuccess}
               >
                 Confirm Booking
               </Button>
 
-              {showBTN && (
-                <Button
-                  fullWidth
-                  size="lg"
-                  type="link"
-                  mt="md"
-                  variant="gradient"
-                  gradient={{ from: "blue", to: "cyan", deg: 135 }}
-                  radius="md"
-                  component={Link}
-                  to={`/customer/create-payment/${roomId}`}
-                >
-                  Go To Payment ?
-                </Button>
-              )}
+              {showBTN && <SendPaymentIntentBtn roomId={roomId} />}
             </Stack>
           </Card>
         </form>

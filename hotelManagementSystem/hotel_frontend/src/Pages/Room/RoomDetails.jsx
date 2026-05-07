@@ -43,6 +43,7 @@ import Loading from "../../Components/Loader/Loading";
 import NoData from "../../Components/Empty/NoData";
 import ReviewCard from "../../Components/Card/Review/ReviewCard";
 import useGetImagesByRoom from "../../Hooks/Room/useGetImagesByRoom";
+import WishListBtn from "../../Components/Buttons/WishListBtn";
 
 const RoomDetails = () => {
   const { roomId } = useParams();
@@ -369,6 +370,8 @@ const RoomDetails = () => {
                       </Group>
                     ))}
                   </Stack>
+
+                  <WishListBtn room={room} />
                 </Stack>
               </Paper>
             </Box>

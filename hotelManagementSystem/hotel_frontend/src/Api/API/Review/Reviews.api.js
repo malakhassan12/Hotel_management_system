@@ -1,16 +1,11 @@
 import reviewClient from "../../Client/Review/Review.client";
 
+// Malak
 export const addReview = async (data) => {
-    try {
   const res = await reviewClient.post("/add", data);
 
-  return res.data;
-} catch (error) {
-  console.error("Error adding review:", error);
-  throw error;
-}
+  return res?.data;
 };
-
 
 export const getReviewsByUserId = async (userId) => {
   try {
@@ -21,8 +16,6 @@ export const getReviewsByUserId = async (userId) => {
     throw error;
   }
 };
- 
-
 
 export const getAvgRatingForRoom = async (roomId) => {
   try {

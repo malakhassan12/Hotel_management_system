@@ -18,6 +18,18 @@ export const getOneBooking = async ({ userId, roomId }) => {
 };
 
 
+export const canReview = async ({ userId, roomId }) => {
+  const res = await bookingClient.get(`/CanReview`, {
+    params: {
+      userId: userId,
+      roomId: roomId,
+    },
+  });
+  return res?.data;
+};
+
+
+
 
 
 export const viewBookingsHistory = async (userId) => {

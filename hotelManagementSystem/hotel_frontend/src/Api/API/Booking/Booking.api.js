@@ -45,6 +45,8 @@ const getRevenueByMonth = async () => {
   const res = await bookingClient.get(`/monthly-revenue`);
   return res?.data;
 };
+
+
 export {
   getAllBookings,
   acceptBooking,
@@ -55,4 +57,5 @@ export {
   checkIn,
   checkOut,
   getRevenueByMonth,
+  
 };

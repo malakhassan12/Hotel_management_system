@@ -11,22 +11,21 @@ const useAddReview = () => {
   const { roomId } = useParams();
 
   return useMutation({
-    
     mutationFn: (data) => {
-      if (!user?.id) throw new Error("User not logged in");
+      if (!user?.userId) throw new Error("User not logged in");
       if (!roomId) throw new Error("Room ID missing");
 
       return addReview({
         ...data,
-        userId: user.id,
+        userId: user?.userId,
         roomId: Number(roomId),
       });
     },
 
     onSuccess: () => {
-    queryClient.invalidateQueries({
-  queryKey: QUERY_KEYS.REVIEWS_BY_ROOM(Number(roomId)),
-});
+      queryClient.invalidateQueries({
+        queryKey: ["reviews", roomId],
+      });
       notifications.show({
         title: "Review Added",
         message: "Thanks for your feedback ",
@@ -35,8 +34,7 @@ const useAddReview = () => {
     },
 
     onError: (error) => {
-      const message =
-        error.response?.data?.message || "Failed to add review";
+      const message = error.response?.data?.message || "Failed to add review";
 
       notifications.show({
         title: "Error",

@@ -11,6 +11,7 @@ import {
   Loader,
   Center,
   Space,
+  Pagination,
 } from "@mantine/core";
 // ******************************** Icons ********************************
 import {
@@ -30,6 +31,7 @@ import NoData from "../../Empty/NoData";
 import { mapBookingData } from "../../../Functions/Booking/bookingFunctions";
 import useSearchStore from "../../../Store/useSearchStore";
 import SearchBySelect from "../../Search/SearchBySelect";
+import { useState } from "react";
 
 const BookingRequestTable = () => {
   const { data: res = [], isLoading, error } = useGetAllBookings();
@@ -44,6 +46,10 @@ const BookingRequestTable = () => {
     isLoading: isLoadingFinal,
     error: errorFinal,
   } = UseGetUsersForBooking(data || []);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10; // Change this value to adjust rows per page
 
   console.log("RES:", res);
   console.log("TYPE:", typeof res);
@@ -72,6 +78,24 @@ const BookingRequestTable = () => {
     return matchStatus && matchSearch;
   });
 
+  // Pagination logic
+  const totalPages = Math.ceil(tableRows.length / itemsPerPage);
+  const paginatedRows = tableRows.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  // Reset to first page when filters change
+  const handleFilterChange = (newStatus) => {
+    setStatusFilter(newStatus);
+    setCurrentPage(1);
+  };
+
+  const handleSearchChange = (newSearch) => {
+    setSearchQuery(newSearch);
+    setCurrentPage(1);
+  };
+
   console.log(data, "Data");
 
   // Loading state
@@ -88,13 +112,14 @@ const BookingRequestTable = () => {
     <Box>
       <SearchBySelect
         statusValue={statusFilter}
-        onStatusChange={setStatusFilter}
+        onStatusChange={handleFilterChange}
         searchValue={searchQuery}
-        onSearchChange={setSearchQuery}
+        onSearchChange={handleSearchChange}
         showSearch={true}
       />
 
       <Space h={"md"} />
+      
       <ScrollArea>
         <Table striped highlightOnHover withTableBorder>
           <Table.Thead>
@@ -112,7 +137,7 @@ const BookingRequestTable = () => {
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
-            {tableRows.length === 0 ? (
+            {paginatedRows.length === 0 ? (
               <Table.Tr>
                 <Table.Td colSpan={12}>
                   <Center>
@@ -122,7 +147,7 @@ const BookingRequestTable = () => {
               </Table.Tr>
             ) : (
               <>
-                {tableRows.map((row) => (
+                {paginatedRows.map((row) => (
                   <BookingRow key={row?.id} row={row} />
                 ))}
               </>
@@ -130,6 +155,42 @@ const BookingRequestTable = () => {
           </Table.Tbody>
         </Table>
       </ScrollArea>
+
+      {/* Pagination Section */}
+      {totalPages > 1 && (
+        <>
+          <Space h="lg" />
+          <Group justify="center" mt="md">
+            <Pagination
+              total={totalPages}
+              value={currentPage}
+              onChange={setCurrentPage}
+              color="primary"
+              radius="md"
+              withEdges
+              size="md"
+            />
+          </Group>
+          
+          {/* Show records info */}
+          <Group justify="center" mt="xs">
+            <Text size="xs" c="dimmed">
+              Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
+              {Math.min(currentPage * itemsPerPage, tableRows.length)} of{" "}
+              {tableRows.length} bookings
+            </Text>
+          </Group>
+        </>
+      )}
+
+      {/* Show total count even without pagination */}
+      {tableRows.length > 0 && totalPages <= 1 && (
+        <Group justify="center" mt="md">
+          <Text size="xs" c="dimmed">
+            Total {tableRows.length} booking{tableRows.length !== 1 ? "s" : ""}
+          </Text>
+        </Group>
+      )}
     </Box>
   );
 };
