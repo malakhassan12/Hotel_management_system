@@ -3,121 +3,246 @@ import {
   Title,
   Text,
   Stack,
-  Grid,
   Alert,
+  Center,
+  Paper,
+  ThemeIcon,
+  Group,
+  Box,
 } from "@mantine/core";
-import { IconAlertCircle } from "@tabler/icons-react";
+import {
+  IconAlertCircle,
+  IconCalendarStats,
+  IconBookmark,
+  IconBookmarkPlus,
+} from "@tabler/icons-react";
 import { useState } from "react";
 
 import BookingsTabs from "../../Components/Tabs/Customer/BookingsTabs";
 import BookingsTable from "../../Components/Table/Customer/BookingsTable";
 
-import useBookingHistory from "../../Hooks/Booking/useBookingHistory";
-import useBookingsByStatus from "../../Hooks/Booking/useBookingsByStatus";
+import useBookingHistory from "../../Hooks/Customer/useBookingHistory";
+import Loading from "../../Components/Loader/Loading";
+import Error from "../../Components/Loader/Error";
+import InitialBox from "../../Components/Box/InitialBox";
 
 const MyBookings = () => {
   const [activeTab, setActiveTab] = useState("all");
 
- 
-  const historyQuery = useBookingHistory();
+  // Fetch all bookings (this is your base data)
+  const {
+    data: historyQuery,
+    isLoading: isLoadingAll,
+    error: errorAll,
+  } = useBookingHistory();
 
-  const statusQuery = useBookingsByStatus(
-    activeTab === "all" ? null : activeTab.toUpperCase()
-  );
+  console.log(historyQuery);
 
- 
-  const apiBookings =
-    activeTab === "all"
-      ? historyQuery.data || []
-      : statusQuery.data || [];
-
-  const isLoading =
-    activeTab === "all"
-      ? historyQuery.isLoading
-      : statusQuery.isLoading;
-
-  const error =
-    activeTab === "all"
-      ? historyQuery.error
-      : statusQuery.error;
-
- 
-  const statusMap = {
-    PENDING: "pending",
-    ACCEPTED: "confirmed",
-    CHECKED_IN: "checked-in",
-  };
-
-  const bookings = apiBookings.map((b) => ({
+  // Transform all bookings to table format
+  const allBookings = (historyQuery || []).map((b) => ({
     id: b.id,
     room: `Room ${b.roomId}`,
     checkIn: new Date(b.check_in_Date).toLocaleDateString(),
     checkOut: new Date(b.check_out_Date).toLocaleDateString(),
-    guests: b.totalGuests,
+    guests: b.totalGuests || 2,
     total: b.totalPrice,
-    status: statusMap[b.status] || "pending",
+    phone: b.phone,
+    paymentStatus: b.paymentStatus,
+    createdAt: b.created_at,
+    status: b.status,
+    roomId: b.roomId,
   }));
 
-  
-  const filteredBookings = bookings;
+  // Filter bookings based on active tab
+  const getFilteredBookings = () => {
+    if (activeTab === "all") return allBookings;
 
+    const statusMap = {
+      pending: "PENDING",
+      confirmed: "ACCEPTED",
+      "checked-in": "CHECKED_IN",
+    };
 
-  if (isLoading) {
-    return (
-      <Container size="xl" py="xl">
-        <Stack gap="xl">
-          <Title order={1}>My Bookings</Title>
-          <Text c="dimmed">Loading your bookings...</Text>
-        </Stack>
-      </Container>
-    );
+    const targetStatus = statusMap[activeTab];
+    
+    // Filter the already transformed bookings
+    return allBookings.filter((booking) => booking.status === targetStatus);
+  };
+
+  const filteredBookings = getFilteredBookings();
+
+  // Loading state
+  if (isLoadingAll) {
+    return <Loading name={"Bookings"} />;
   }
 
- 
-  if (error) {
-    return (
-      <Container size="xl" py="xl">
-        <Grid>
-          <Grid.Col span={12}>
-            <Alert
-              icon={<IconAlertCircle size={16} />}
-              title="Error Loading Bookings"
-              color="red"
-              variant="filled"
-            >
-              Failed to load bookings. Please refresh the page.
-            </Alert>
-          </Grid.Col>
-        </Grid>
-      </Container>
-    );
+  // Error state
+  if (errorAll) {
+    return <Error name={"Bookings"} error={errorAll} />;
   }
+
+  // Get counts for tabs
+  const getTabCounts = () => {
+    const allBookingsCount = historyQuery || [];
+    const pendingCount = allBookingsCount.filter(
+      (b) => b.status === "PENDING"
+    ).length;
+    const confirmedCount = allBookingsCount.filter(
+      (b) => b.status === "ACCEPTED"
+    ).length;
+    const checkedInCount = allBookingsCount.filter(
+      (b) => b.status === "CHECKED_IN"
+    ).length;
+
+    return {
+      all: allBookingsCount.length,
+      pending: pendingCount,
+      confirmed: confirmedCount,
+      "checked-in": checkedInCount,
+    };
+  };
+
+  const counts = getTabCounts();
 
   return (
-    <Container size="xl" py="xl">
-      <Stack gap="xl">
-        <div>
-          <Title order={1}>My Bookings</Title>
-          <Text c="dimmed">
-            View and manage your reservations
-          </Text>
-        </div>
+    // ... rest of your JSX remains the same
+    <Box
+      style={{
+        minHeight: "100vh",
+        paddingTop: "2rem",
+        paddingBottom: "2rem",
+      }}
+    >
+      <Container size="xl">
+        <Stack gap="xl">
+          {/* Header Section with Gradient */}
+          <Paper
+            shadow="lg"
+            radius="xl"
+            p="xl"
+            style={{
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            <Group justify="space-between" align="center">
+              <div>
+                <Group gap="xs" mb="xs">
+                  <ThemeIcon
+                    size="xl"
+                    variant="light"
+                    color="white"
+                    radius="xl"
+                  >
+                    <IconCalendarStats size={28} />
+                  </ThemeIcon>
+                  <Title order={1} size="h1" fw={800}>
+                    My Bookings
+                  </Title>
+                </Group>
+                <Text opacity={0.9} size="lg" ml={50}>
+                  View and manage all your room reservations
+                </Text>
+              </div>
+            </Group>
 
-        <BookingsTabs
-          tabs={[
-            { key: "all", label: "All Bookings" },
-            { key: "pending", label: "Pending" },
-            { key: "confirmed", label: "Confirmed" },
-            { key: "checked-in", label: "Checked-In" },
-          ]}
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-        />
+            {/* Decorative circles */}
+            <Box
+              style={{
+                position: "absolute",
+                top: -50,
+                right: -50,
+                width: 200,
+                height: 200,
+                borderRadius: "50%",
+                background: "rgba(255, 255, 255, 0.1)",
+                pointerEvents: "none",
+              }}
+            />
+            <Box
+              style={{
+                position: "absolute",
+                bottom: -80,
+                left: -80,
+                width: 300,
+                height: 300,
+                borderRadius: "50%",
+                background: "rgba(255, 255, 255, 0.05)",
+                pointerEvents: "none",
+              }}
+            />
+          </Paper>
 
-        <BookingsTable bookings={filteredBookings} />
-      </Stack>
-    </Container>
+          {/* Tabs Section with Counts */}
+          <Paper shadow="sm" radius="lg" p="md" withBorder>
+            <BookingsTabs
+              tabs={[
+                { key: "all", label: `📋 All Bookings`, count: counts.all },
+                { key: "pending", label: `⏳ Pending`, count: counts.pending },
+                {
+                  key: "confirmed",
+                  label: `✅ Confirmed`,
+                  count: counts.confirmed,
+                },
+                {
+                  key: "checked-in",
+                  label: `🏨 Checked-In`,
+                  count: counts.checkedIn,
+                },
+              ]}
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+            />
+          </Paper>
+
+          {/* Bookings Table Section */}
+          <Paper shadow="sm" radius="lg" p="xl" withBorder>
+            {filteredBookings.length === 0 ? (
+              <Center py="xl">
+                <Alert
+                  color="blue"
+                  variant="light"
+                  title="No Bookings Found"
+                  icon={<IconAlertCircle size={20} />}
+                  radius="md"
+                >
+                  <Text size="sm">
+                    {activeTab === "all"
+                      ? "You haven't made any bookings yet. Start exploring our rooms!"
+                      : `You don't have any ${activeTab} bookings at the moment.`}
+                  </Text>
+                </Alert>
+              </Center>
+            ) : (
+              <>
+                <Group justify="space-between" mb="md">
+                  <Text fw={600} size="sm" c="dimmed">
+                    Showing {filteredBookings.length} booking
+                    {filteredBookings.length !== 1 ? "s" : ""}
+                  </Text>
+                  <Group gap="xs">
+                    <ThemeIcon
+                      size="sm"
+                      variant="light"
+                      color="blue"
+                      radius="xl"
+                    >
+                      <IconBookmarkPlus size={12} />
+                    </ThemeIcon>
+                    <Text size="xs" c="dimmed">
+                      Last updated: {new Date().toLocaleDateString()}
+                    </Text>
+                  </Group>
+                </Group>
+                <BookingsTable bookings={filteredBookings} />
+              </>
+            )}
+          </Paper>
+        </Stack>
+      </Container>
+    </Box>
   );
 };
+
 
 export default MyBookings;

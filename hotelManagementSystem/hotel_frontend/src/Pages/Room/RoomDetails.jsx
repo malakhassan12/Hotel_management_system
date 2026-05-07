@@ -37,12 +37,13 @@ import {
 } from "@tabler/icons-react";
 import useAuthStore from "../../Store/authStore";
 import useGetRoom from "../../Hooks/Room/useGetRoom";
-import { roles } from "../../Constants/ConstantsFromBack";
+import { roles, roomStatus } from "../../Constants/ConstantsFromBack";
 import { mapRoomData } from "../../Functions/Room/RoomFunctions";
 import Loading from "../../Components/Loader/Loading";
 import NoData from "../../Components/Empty/NoData";
 import ReviewCard from "../../Components/Card/Review/ReviewCard";
 import useGetImagesByRoom from "../../Hooks/Room/useGetImagesByRoom";
+import WishListBtn from "../../Components/Buttons/WishListBtn";
 
 const RoomDetails = () => {
   const { roomId } = useParams();
@@ -334,13 +335,15 @@ const RoomDetails = () => {
                   {/* Book Now Button */}
                   <Button
                     component={Link}
-                    to={`/receptionist/rooms/${room.id}`}
+                    to={`/customer/rooms/book-room/${room.id}`}
                     variant="light"
                     color="primary"
                     size="sm"
-                    disabled={room.status !== "Available"}
+                    disabled={room.status !== roomStatus[0]}
                   >
-                    {room.status === "Available" ? "Book Now" : "Not Available"}
+                    {room.status === roomStatus[0]
+                      ? "Book Now"
+                      : "Not Available"}
                   </Button>
 
                   {/* Cancellation Policy */}
@@ -367,6 +370,8 @@ const RoomDetails = () => {
                       </Group>
                     ))}
                   </Stack>
+
+                  <WishListBtn room={room} />
                 </Stack>
               </Paper>
             </Box>

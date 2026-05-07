@@ -110,6 +110,8 @@ const Register = () => {
 
     setServerError("");
 
+    
+
     const { success } = await registerUser(values);
     if (success) {
       form.reset();

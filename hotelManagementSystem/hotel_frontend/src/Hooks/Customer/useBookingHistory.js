@@ -7,9 +7,9 @@ const useBookingHistory = () => {
   const { user } = useAuthStore();
 
   return useQuery({
-    queryKey: QUERY_KEYS.BOOKINGS_HISTORY(user?.id),
-    queryFn: () => viewBookingsHistory(user.id),
-    enabled: !!user?.id,
+    queryKey: QUERY_KEYS.BOOKINGS_HISTORY(user?.userId),
+    queryFn: () => viewBookingsHistory(user?.userId),
+    enabled: !!user?.userId,
   });
 };
 

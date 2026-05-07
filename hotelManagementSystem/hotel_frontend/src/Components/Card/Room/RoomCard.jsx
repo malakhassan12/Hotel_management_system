@@ -22,13 +22,16 @@ import {
   IconTools,
 } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
-import useFavoritesStore from "../../../Store/favoritesStore";
+// import useFavoritesStore from "../../../Store/favoritesStore";
 import { useNavigate, useLocation } from "react-router-dom";
 import { roles, roomStatus } from "../../../Constants/ConstantsFromBack";
 import useRoomMutations from "../../../Hooks/Room/useRoomMutations";
 import getStatusConfigRoom from "../../../Utils/Room/getStatusConfigRoom";
+import WishListBtn from "../../Buttons/WishListBtn";
 
 const RoomCard = ({ item, role = "CUSTOMER" }) => {
+  const navigate = useNavigate();
+
   const roleNavigate =
     role == "EMPLOYEE"
       ? "receptionist"
@@ -41,11 +44,11 @@ const RoomCard = ({ item, role = "CUSTOMER" }) => {
   );
 
   const { updateRoomStatusMutation } = useRoomMutations();
-  const navigate = useNavigate();
-  const { addToFavorites, removeFromFavorites, isFavorite } =
-    useFavoritesStore();
 
-  const liked = isFavorite(item.id);
+  // const { addToFavorites, removeFromFavorites, isFavorite } =
+  //   useFavoritesStore();
+
+  // const liked = isFavorite(item.id);
 
   const defaultImage =
     "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=400&h=250&fit=crop";
@@ -201,32 +204,15 @@ const RoomCard = ({ item, role = "CUSTOMER" }) => {
           ) : (
             // Customer: Book Now Button with Love Icon
             <Group gap="xs">
-              <ActionIcon
-                variant="light"
-                color="red"
-                size="md"
-                radius="xl"
-                onClick={() => {
-                  if (liked) {
-                    removeFromFavorites(item.id);
-                  } else {
-                    addToFavorites(item);
-                  }
-                }}
-              >
-                {liked ? (
-                  <IconHeartFilled size={18} />
-                ) : (
-                  <IconHeart size={18} />
-                )}
-              </ActionIcon>
+              <WishListBtn room={item} />
               <Button
-                onClick={() => navigate(`/customer/book-room/${item.id}`)}
+                onClick={() => navigate(`/customer/rooms/book-room/${item.id}`)}
                 variant="filled"
                 size="sm"
                 color="primary"
+                disabled={item.status !== roomStatus[0]}
               >
-                Book Now
+                {item.status === roomStatus[0] ? "Book Now" : "Not Available"}
               </Button>
             </Group>
           )}

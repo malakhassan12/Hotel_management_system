@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Table,
   Badge,
@@ -11,6 +11,8 @@ import {
   Card,
   Divider,
   ActionIcon,
+  Pagination,
+  Space,
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useNavigate } from "react-router-dom";
@@ -25,6 +27,10 @@ const ReviewTable = () => {
   const { data = [] } = useGetAllRoomsReviews();
   const finalData = Array.isArray(data) ? data : [];
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; // Change this to adjust items per page
+
   const reviewsByRoom = finalData?.reduce((acc, item) => {
     const roomId = item.room.id;
     if (!acc[roomId]) {
@@ -38,6 +44,13 @@ const ReviewTable = () => {
   }, {});
 
   const roomReviewsArray = Object.values(reviewsByRoom || {});
+
+  // Pagination logic
+  const totalPages = Math.ceil(roomReviewsArray.length / itemsPerPage);
+  const paginatedRooms = roomReviewsArray.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   // Handle click on review ID
   const handleReviewClick = (roomId, roomReviews) => {
@@ -54,11 +67,11 @@ const ReviewTable = () => {
     return <NoData name={"No reviews available"} />;
   }
 
-  // Mobile Card View
+  // Mobile Card View with Pagination
   if (isMobile) {
     return (
       <Stack gap="md">
-        {roomReviewsArray.map((item) => (
+        {paginatedRooms.map((item) => (
           <Card
             key={item.room.id}
             shadow="sm"
@@ -72,8 +85,8 @@ const ReviewTable = () => {
                   size="lg"
                   color="blue"
                   variant="subtle"
-                  color="blue"
                   onClick={() => handleReviewClick(item.room.id, item.reviews)}
+                  style={{ cursor: "pointer" }}
                 >
                   Room #{item.room.roomNumber}
                 </Badge>
@@ -122,102 +135,165 @@ const ReviewTable = () => {
             </Stack>
           </Card>
         ))}
+
+        {/* Pagination for Mobile */}
+        {totalPages > 1 && (
+          <>
+            <Space h="md" />
+            <Group justify="center">
+              <Pagination
+                total={totalPages}
+                value={currentPage}
+                onChange={setCurrentPage}
+                color="primary"
+                radius="md"
+                withEdges
+                size="sm"
+              />
+            </Group>
+            <Group justify="center" mt="xs">
+              <Text size="xs" c="dimmed">
+                Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
+                {Math.min(currentPage * itemsPerPage, roomReviewsArray.length)}{" "}
+                of {roomReviewsArray.length} rooms
+              </Text>
+            </Group>
+          </>
+        )}
       </Stack>
     );
   }
 
-  // Desktop Table View
+  // Desktop Table View with Pagination
   return (
-    <Paper shadow="sm" withBorder style={{ overflowX: "auto" }}>
-      <Table striped highlightOnHover>
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th>Review ID</Table.Th>
-            <Table.Th>Room Details</Table.Th>
-            <Table.Th>Rating</Table.Th>
-            <Table.Th>User</Table.Th>
-            <Table.Th>Date</Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>
-          {roomReviewsArray.map((item) => (
-            <React.Fragment key={item.room.id}>
-              <Table.Tr>
-                <Table.Td colSpan={6}>
-                  <Flex
-                    direction={{ base: "column", sm: "row" }}
-                    justify="space-between"
-                    gap="xs"
-                  >
-                    <Group gap="xs" wrap="wrap">
-                      <Badge
-                        size="lg"
-                        color="blue"
-                        c="blue"
-                        style={{
-                          cursor: "pointer",
-                          textDecoration: "underline",
-                        }}
-                        onClick={() =>
-                          handleReviewClick(item.room.id, item.reviews)
-                        }
-                      >
-                        Room #{item.room.roomNumber}
-                      </Badge>
-                      <Badge variant="light">{item.room.roomType}</Badge>
-                      <Badge variant="outline">
-                        ${item.room.pricePerNight}/night
-                      </Badge>
-                    </Group>
-                    <Group gap="xs" wrap="wrap">
-                      {item.room.oceanView && (
-                        <Badge size="sm">🌊 Ocean View</Badge>
-                      )}
-                      {item.room.kingBed && (
-                        <Badge size="sm">🛏️ King Bed</Badge>
-                      )}
-                      {item.room.balcony && <Badge size="sm">🌅 Balcony</Badge>}
-                      {item.room.wifi && <Badge size="sm">📶 WiFi</Badge>}
-                    </Group>
-                  </Flex>
-                </Table.Td>
-              </Table.Tr>
-              {item.reviews.map((review) => (
-                <Table.Tr key={review.id}>
-                  <Table.Td>
-                    <Group gap="xs" wrap="nowrap">
-                      <Text>Review #{review.id}</Text>
-                    </Group>
-                  </Table.Td>
-                  <Table.Td>
-                    <Text size="sm" c="dimmed">
-                      Room #{item.room.roomNumber}
-                    </Text>
-                  </Table.Td>
-                  <Table.Td>
-                    <Group gap="xs" wrap="nowrap">
-                      <Rating value={review.rating} readOnly size="sm" />
-                      <Text size="sm" fw={500}>
-                        {review.rating}/5
-                      </Text>
-                    </Group>
-                  </Table.Td>
-
-                  <Table.Td>
-                    <Badge variant="outline">ID: {review.userId}</Badge>
-                  </Table.Td>
-                  <Table.Td>
-                    <Text size="xs" c="dimmed" style={{ whiteSpace: "nowrap" }}>
-                      {review.created_at}
-                    </Text>
+    <>
+      <Paper shadow="sm" withBorder style={{ overflowX: "auto" }}>
+        <Table striped highlightOnHover>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Review ID</Table.Th>
+              <Table.Th>Room Details</Table.Th>
+              <Table.Th>Rating</Table.Th>
+              <Table.Th>User</Table.Th>
+              <Table.Th>Date</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            {paginatedRooms.map((item) => (
+              <React.Fragment key={item.room.id}>
+                <Table.Tr>
+                  <Table.Td colSpan={6}>
+                    <Flex
+                      direction={{ base: "column", sm: "row" }}
+                      justify="space-between"
+                      gap="xs"
+                    >
+                      <Group gap="xs" wrap="wrap">
+                        <Badge
+                          size="lg"
+                          color="blue"
+                          c="blue"
+                          style={{
+                            cursor: "pointer",
+                            textDecoration: "underline",
+                          }}
+                          onClick={() =>
+                            handleReviewClick(item.room.id, item.reviews)
+                          }
+                        >
+                          Room #{item.room.roomNumber}
+                        </Badge>
+                        <Badge variant="light">{item.room.roomType}</Badge>
+                        <Badge variant="outline">
+                          ${item.room.pricePerNight}/night
+                        </Badge>
+                      </Group>
+                      <Group gap="xs" wrap="wrap">
+                        {item.room.oceanView && (
+                          <Badge size="sm">🌊 Ocean View</Badge>
+                        )}
+                        {item.room.kingBed && (
+                          <Badge size="sm">🛏️ King Bed</Badge>
+                        )}
+                        {item.room.balcony && (
+                          <Badge size="sm">🌅 Balcony</Badge>
+                        )}
+                        {item.room.wifi && <Badge size="sm">📶 WiFi</Badge>}
+                      </Group>
+                    </Flex>
                   </Table.Td>
                 </Table.Tr>
-              ))}
-            </React.Fragment>
-          ))}
-        </Table.Tbody>
-      </Table>
-    </Paper>
+                {item.reviews.map((review) => (
+                  <Table.Tr key={review.id}>
+                    <Table.Td>
+                      <Group gap="xs" wrap="nowrap">
+                        <Text>Review #{review.id}</Text>
+                      </Group>
+                    </Table.Td>
+                    <Table.Td>
+                      <Text size="sm" c="dimmed">
+                        Room #{item.room.roomNumber}
+                      </Text>
+                    </Table.Td>
+                    <Table.Td>
+                      <Group gap="xs" wrap="nowrap">
+                        <Rating value={review.rating} readOnly size="sm" />
+                        <Text size="sm" fw={500}>
+                          {review.rating}/5
+                        </Text>
+                      </Group>
+                    </Table.Td>
+
+                    <Table.Td>
+                      <Badge variant="outline">ID: {review.userId}</Badge>
+                    </Table.Td>
+                    <Table.Td>
+                      <Text size="xs" c="dimmed" style={{ whiteSpace: "nowrap" }}>
+                        {review.created_at}
+                      </Text>
+                    </Table.Td>
+                  </Table.Tr>
+                ))}
+              </React.Fragment>
+            ))}
+          </Table.Tbody>
+        </Table>
+      </Paper>
+
+      {/* Pagination for Desktop */}
+      {totalPages > 1 && (
+        <>
+          <Space h="lg" />
+          <Group justify="center">
+            <Pagination
+              total={totalPages}
+              value={currentPage}
+              onChange={setCurrentPage}
+              color="primary"
+              radius="md"
+              withEdges
+              size="md"
+            />
+          </Group>
+          <Group justify="center" mt="xs">
+            <Text size="xs" c="dimmed">
+              Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
+              {Math.min(currentPage * itemsPerPage, roomReviewsArray.length)} of{" "}
+              {roomReviewsArray.length} rooms
+            </Text>
+          </Group>
+        </>
+      )}
+
+      {/* Show total count even without pagination */}
+      {roomReviewsArray.length > 0 && totalPages <= 1 && (
+        <Group justify="center" mt="md">
+          <Text size="xs" c="dimmed">
+            Total {roomReviewsArray.length} room{roomReviewsArray.length !== 1 ? "s" : ""} with reviews
+          </Text>
+        </Group>
+      )}
+    </>
   );
 };
 

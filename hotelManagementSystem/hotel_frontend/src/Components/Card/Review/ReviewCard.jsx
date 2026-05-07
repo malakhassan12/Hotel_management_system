@@ -37,11 +37,15 @@ import Loading from "../../Loader/Loading";
 import useGetAVGReviewsByRoom from "../../../Hooks/Review/useGetAVGReviewsByRoom";
 import dayjs from "dayjs";
 import getRatingLabel from "../../../Utils/Review/getStatusConfigReview";
+import useCanReview from "../../../Hooks/Customer/useCanReview";
 
 const ReviewCard = ({ roomId }) => {
   const { data, isLoading, error } = useGetReviewByRoom(roomId);
   const { data: avg } = useGetAVGReviewsByRoom(roomId);
 
+  const { data: canReview } = useCanReview(roomId);
+
+  console.log(canReview);
   console.log(avg);
   // Handle different API response structures
   const reviews =
@@ -64,8 +68,6 @@ const ReviewCard = ({ roomId }) => {
     1: reviews.filter((r) => r.rating === 1).length,
   };
 
- 
-
   if (isLoading) {
     return <Loading name={"Reviews"} />;
   }
@@ -80,94 +82,105 @@ const ReviewCard = ({ roomId }) => {
 
   return (
     <>
-      {/* Header Section */}
-      <Group justify="space-between" align="center" mb="xl" wrap="wrap">
-        <Group gap="sm">
-          <ThemeIcon size="lg" radius="md" color="primary" variant="light">
-            <IconStar size={18} />
-          </ThemeIcon>
-          <Title order={3}>Guest Reviews</Title>
-        </Group>
-        <Badge size="lg" radius="xl" color="primary" variant="filled">
-          {totalReviews} {totalReviews === 1 ? "Review" : "Reviews"}
-        </Badge>
-      </Group>
+           {/* Show Review Form if user can review */}
+      {canReview && (
+        <ReviewForm roomId={roomId} />
+      )}
 
-      {/* Rating Summary Card */}
-      <Card withBorder radius="lg" p="xl" mb="xl" shadow="sm">
-        <SimpleGrid cols={{ base: 1, md: 2 }} spacing="xl">
-          {/* Left: Average Rating */}
-          <Stack
-            align="center"
-            justify="center"
-            gap="xs"
-            style={{ textAlign: "center" }}
-          >
-            <Text
-              size="xs"
-              c="dimmed"
-              tt="uppercase"
-              fw={600}
-              letterSpacing={1}
-            >
-              Overall Rating
-            </Text>
-            <Group gap={4} align="baseline">
-              <Text size="3.5rem" fw={800} c="primary">
-                {averageRating.toFixed(1)}
-              </Text>
-              <Text size="sm" c="dimmed">
-                / 5
-              </Text>
+      {reviews.length === 0 ? (
+        <NoData name={"Reviews"} />
+      ) : (
+        <>
+          {/* Header Section */}
+          <Group justify="space-between" align="center" mb="xl" wrap="wrap">
+            <Group gap="sm">
+              <ThemeIcon size="lg" radius="md" color="primary" variant="light">
+                <IconStar size={18} />
+              </ThemeIcon>
+              <Title order={3}>Guest Reviews</Title>
             </Group>
-            <Rating value={averageRating} fractions={2} readOnly size="lg" />
-            <Group gap={4} mt="xs">
-              <IconThumbUp size={14} color="var(--mantine-color-green-6)" />
-              <Text size="xs" c="dimmed">
-                Based on {totalReviews} guest reviews
-              </Text>
-            </Group>
-          </Stack>
+            <Badge size="lg" radius="xl" color="primary" variant="filled">
+              {totalReviews} {totalReviews === 1 ? "Review" : "Reviews"}
+            </Badge>
+          </Group>
 
-          {/* Right: Rating Distribution */}
-          <Stack gap="sm">
-            <Text size="sm" fw={600} c="dimmed" tt="uppercase">
-              Rating Distribution
-            </Text>
-            {[5, 4, 3, 2, 1].map((star) => {
-              const count = ratingCounts[star];
-              const percentage =
-                totalReviews > 0 ? (count / totalReviews) * 100 : 0;
-              return (
-                <Group key={star} gap="sm" wrap="nowrap">
-                  <Group gap={4} style={{ width: 55 }}>
-                    <Text size="sm" fw={600}>
-                      {star}
-                    </Text>
-                    <IconStar size={14} color="#fab005" fill="#fab005" />
-                  </Group>
-                  <div style={{ flex: 1 }}>
-                    <Progress
-                      value={percentage}
-                      size="md"
-                      radius="xl"
-                      color={
-                        star >= 4 ? "green" : star === 3 ? "yellow" : "orange"
-                      }
-                      striped={star <= 2}
-                      animated={star === 5}
-                    />
-                  </div>
-                  <Text size="xs" fw={500} style={{ width: 45 }} ta="right">
-                    {count}
+          {/* Rating Summary Card */}
+          <Card withBorder radius="lg" p="xl" mb="xl" shadow="sm">
+            <SimpleGrid cols={{ base: 1, md: 2 }} spacing="xl">
+              {/* Left: Average Rating */}
+              <Stack
+                align="center"
+                justify="center"
+                gap="xs"
+                style={{ textAlign: "center" }}
+              >
+                <Text
+                  size="xs"
+                  c="dimmed"
+                  tt="uppercase"
+                  fw={600}
+                  letterSpacing={1}
+                >
+                  Overall Rating
+                </Text>
+                <Group gap={4} align="baseline">
+                  <Text size="3.5rem" fw={800} c="primary">
+                    {averageRating.toFixed(1)}
+                  </Text>
+                  <Text size="sm" c="dimmed">
+                    / 5
                   </Text>
                 </Group>
-              );
-            })}
-          </Stack>
-        </SimpleGrid>
-      </Card>
+                <Rating value={averageRating} fractions={2} readOnly size="lg" />
+                <Group gap={4} mt="xs">
+                  <IconThumbUp size={14} color="var(--mantine-color-green-6)" />
+                  <Text size="xs" c="dimmed">
+                    Based on {totalReviews} guest reviews
+                  </Text>
+                </Group>
+              </Stack>
 
+              {/* Right: Rating Distribution */}
+              <Stack gap="sm">
+                <Text size="sm" fw={600} c="dimmed" tt="uppercase">
+                  Rating Distribution
+                </Text>
+                {[5, 4, 3, 2, 1].map((star) => {
+                  const count = ratingCounts[star];
+                  const percentage =
+                    totalReviews > 0 ? (count / totalReviews) * 100 : 0;
+                  return (
+                    <Group key={star} gap="sm" wrap="nowrap">
+                      <Group gap={4} style={{ width: 55 }}>
+                        <Text size="sm" fw={600}>
+                          {star}
+                        </Text>
+                        <IconStar size={14} color="#fab005" fill="#fab005" />
+                      </Group>
+                      <div style={{ flex: 1 }}>
+                        <Progress
+                          value={percentage}
+                          size="md"
+                          radius="xl"
+                          color={
+                            star >= 4 ? "green" : star === 3 ? "yellow" : "orange"
+                          }
+                          striped={star <= 2}
+                          animated={star === 5}
+                        />
+                      </div>
+                      <Text size="xs" fw={500} style={{ width: 45 }} ta="right">
+                        {count}
+                      </Text>
+                    </Group>
+                  );
+                })}
+              </Stack>
+            </SimpleGrid>
+          </Card>
+
+          </>
+      )}
       {/* Reviews List with Scroll Area */}
       <Card withBorder radius="lg" p={0} shadow="sm">
         <Group
