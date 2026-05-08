@@ -102,14 +102,7 @@ const RoomDetails = () => {
 
               {/* Image Gallery */}
               <Paper withBorder radius="md" p="sm">
-                <Image
-                  src={images[0]}
-                  height={400}
-                  alt={room.title}
-                  radius="md"
-                  fallbackSrc="https://placehold.co/800x500?text=Room+Image"
-                  style={{ objectFit: "cover" }}
-                />
+              
                 {room.images.length > 1 && (
                   <Group mt="sm" gap="sm">
                     {images?.map((img, i) => (

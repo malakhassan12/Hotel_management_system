@@ -36,10 +36,14 @@ const MyBookings = () => {
     error: errorAll,
   } = useBookingHistory();
 
+
   console.log(historyQuery);
 
+
+   const finalHistoryQuery = Array.isArray(historyQuery) ? historyQuery: []
+
   // Transform all bookings to table format
-  const allBookings = (historyQuery || []).map((b) => ({
+  const allBookings = (finalHistoryQuery || [])?.map((b) => ({
     id: b.id,
     room: `Room ${b.roomId}`,
     checkIn: new Date(b.check_in_Date).toLocaleDateString(),
@@ -83,7 +87,7 @@ const MyBookings = () => {
 
   // Get counts for tabs
   const getTabCounts = () => {
-    const allBookingsCount = historyQuery || [];
+    const allBookingsCount = finalHistoryQuery || [];
     const pendingCount = allBookingsCount.filter(
       (b) => b.status === "PENDING"
     ).length;

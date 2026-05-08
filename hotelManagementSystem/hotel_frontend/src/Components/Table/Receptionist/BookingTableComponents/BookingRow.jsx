@@ -104,7 +104,7 @@ const BookingRow = ({ row }) => {
             >
               <IconEye size={16} />
             </ActionIcon>
-            {row?.status == "Pending" && (
+            {row?.status == "pending" && (
               <Flex
                 mih={50}
                 gap="md"

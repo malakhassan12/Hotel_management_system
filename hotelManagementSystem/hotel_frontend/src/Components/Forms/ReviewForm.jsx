@@ -14,7 +14,7 @@ import {
   Alert,
 } from "@mantine/core";
 import { IconStar, IconPencil, IconInfoCircle } from "@tabler/icons-react";
-import useAddReview from "../../../Hooks/Review/useAddReview";
+import useAddReview from "../../Hooks/Review/useAddReview";
 import { notifications } from "@mantine/notifications";
 
 const ReviewForm = ({ roomId }) => {

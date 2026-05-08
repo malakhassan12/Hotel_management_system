@@ -1,17 +1,29 @@
 import { Container, Title, Text, SimpleGrid, Stack } from "@mantine/core";
-
-// import useFavoritesStore from "../../Store/favoritesStore";
-import RoomCard from "../../Components/Card/Room/RoomCard";
 import useGetAllFavourites from "../../Hooks/Favourites/useGetAllFavourites";
 import useAuthStore from "../../Store/authStore";
+import FavoriteCard from "../../Components/Card/Favorite/FavoriteCard";
+import Loading from "../../Components/Loader/Loading";
+import Error from "../../Components/Loader/Error";
+import { IconHeart } from "@tabler/icons-react";
 
 const Favourites = () => {
-  // const { favorites } = useFavoritesStore();
-
   const { user } = useAuthStore();
-  const { data } = useGetAllFavourites(user?.userId);
+  const { data, isLoading, error, refetch } = useGetAllFavourites(user?.userId);
 
   const favorites = Array.isArray(data) ? data : [];
+  console.log(favorites);
+
+  const handleRemove = () => {
+    refetch(); // Refresh the list after removal
+  };
+
+  if (isLoading) {
+    return <Loading name="Favorites" />;
+  }
+
+  if (error) {
+    return <Error name="Favorites" error={error} />;
+  }
 
   return (
     <Container size="xl" py="md">
@@ -21,15 +33,30 @@ const Favourites = () => {
       </Stack>
 
       {favorites.length === 0 ? (
-        <Text c="dimmed" ta="center" mt="xl">
-          No favorite rooms yet ❤️
-        </Text>
+        <Stack align="center" mt="xl" py={50}>
+          <IconHeart size={64} stroke={1.5} color="#ccc" />
+          <Text c="dimmed" ta="center" size="lg">
+            No favorite rooms yet ❤️
+          </Text>
+          <Text c="dimmed" ta="center" size="sm">
+            Start exploring and save rooms you love!
+          </Text>
+        </Stack>
       ) : (
-        <SimpleGrid cols={{ base: 1, sm: 2, lg: 3 }} spacing="lg">
-          {favorites.map((room) => (
-            <RoomCard key={room.id} item={room} role="customer" />
-          ))}
-        </SimpleGrid>
+        <>
+          <Text c="dimmed" mb="md">
+            You have {favorites.length} favorite{favorites.length !== 1 ? "s" : ""}
+          </Text>
+          <SimpleGrid cols={{ base: 1, sm: 2, lg: 3 }} spacing="lg">
+            {favorites.map((favorite) => (
+              <FavoriteCard
+                key={favorite.id}
+                favorite={favorite}
+                onRemove={handleRemove}
+              />
+            ))}
+          </SimpleGrid>
+        </>
       )}
     </Container>
   );

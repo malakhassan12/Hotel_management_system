@@ -24,9 +24,22 @@ const clearFavourites = async (userId) => {
   return res?.data;
 };
 
+const inWishlistForUser = async ({userId, roomId}) => {
+  console.log(userId, roomId)
+  const res = await favouritesClient.get(`/InWishlistForUser`, {
+    params: {
+      userId: userId,
+      roomId: roomId,
+    },
+  });
+
+  return res?.data;
+};
+
 export {
   getAllFavourites,
   deleteItemFromFavourites,
   clearFavourites,
   addToFavourites,
+  inWishlistForUser,
 };

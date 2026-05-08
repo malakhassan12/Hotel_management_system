@@ -38,18 +38,24 @@ import useGetAVGReviewsByRoom from "../../../Hooks/Review/useGetAVGReviewsByRoom
 import dayjs from "dayjs";
 import getRatingLabel from "../../../Utils/Review/getStatusConfigReview";
 import useCanReview from "../../../Hooks/Customer/useCanReview";
+import ReviewForm from "../../Forms/ReviewForm";
+import ReviewActionsCard from "./ReviewActionsCard"; // Import the new component
+import useAuthStore from "../../../Store/authStore";
 
 const ReviewCard = ({ roomId }) => {
-  const { data, isLoading, error } = useGetReviewByRoom(roomId);
+  const { data, isLoading, error, refetch } = useGetReviewByRoom(roomId);
   const { data: avg } = useGetAVGReviewsByRoom(roomId);
-
   const { data: canReview } = useCanReview(roomId);
+  const { user } = useAuthStore(); // Get current user
 
   console.log(canReview);
   console.log(avg);
+  
   // Handle different API response structures
   const reviews =
     data?.reviews || (Array.isArray(data) ? data : data ? [data] : []);
+
+  console.log(reviews);
   const totalReviews = data?.total_reviews || reviews.length;
   const averageRating =
     avg ||
@@ -68,6 +74,10 @@ const ReviewCard = ({ roomId }) => {
     1: reviews.filter((r) => r.rating === 1).length,
   };
 
+  const handleReviewUpdate = () => {
+    refetch(); // Refresh reviews after update/delete
+  };
+
   if (isLoading) {
     return <Loading name={"Reviews"} />;
   }
@@ -82,10 +92,8 @@ const ReviewCard = ({ roomId }) => {
 
   return (
     <>
-           {/* Show Review Form if user can review */}
-      {canReview && (
-        <ReviewForm roomId={roomId} />
-      )}
+      {/* Show Review Form if user can review */}
+      {canReview && <ReviewForm roomId={roomId} onSuccess={handleReviewUpdate} />}
 
       {reviews.length === 0 ? (
         <NoData name={"Reviews"} />
@@ -163,7 +171,11 @@ const ReviewCard = ({ roomId }) => {
                           size="md"
                           radius="xl"
                           color={
-                            star >= 4 ? "green" : star === 3 ? "yellow" : "orange"
+                            star >= 4
+                              ? "green"
+                              : star === 3
+                              ? "yellow"
+                              : "orange"
                           }
                           striped={star <= 2}
                           animated={star === 5}
@@ -178,9 +190,9 @@ const ReviewCard = ({ roomId }) => {
               </Stack>
             </SimpleGrid>
           </Card>
-
-          </>
+        </>
       )}
+
       {/* Reviews List with Scroll Area */}
       <Card withBorder radius="lg" p={0} shadow="sm">
         <Group
@@ -195,6 +207,8 @@ const ReviewCard = ({ roomId }) => {
           <Stack gap={0}>
             {reviews.map((review, index) => {
               const ratingLabel = getRatingLabel(review.rating);
+              const isCurrentUserReview = review.userId === user?.userId;
+              
               return (
                 <Box
                   key={review.id || index}
@@ -257,16 +271,27 @@ const ReviewCard = ({ roomId }) => {
                       </div>
                     </Group>
 
-                    {review.rating === 5 && (
-                      <ThemeIcon
-                        size="lg"
-                        radius="xl"
-                        color="green"
-                        variant="light"
-                      >
-                        <IconThumbUp size={16} />
-                      </ThemeIcon>
-                    )}
+                    <Group gap="xs">
+                      {review.rating === 5 && (
+                        <ThemeIcon
+                          size="lg"
+                          radius="xl"
+                          color="green"
+                          variant="light"
+                        >
+                          <IconThumbUp size={16} />
+                        </ThemeIcon>
+                      )}
+                      
+                      {/* Show Edit/Delete buttons only for current user's review */}
+                      {isCurrentUserReview && (
+                        <ReviewActionsCard 
+                          review={review} 
+                          onUpdateSuccess={handleReviewUpdate}
+                          onDeleteSuccess={handleReviewUpdate}
+                        />
+                      )}
+                    </Group>
                   </Group>
 
                   {/* Review Comment with Quote Icon */}
