@@ -15,38 +15,38 @@ const useBookingMutations = () => {
 
   const { sendNotiMutation } = useNotificationMutations();
 
-  const updateBookingCache = (updatedBooking) => {
-    queryClient.setQueryData(["bookings", user?.userId], (oldData = []) =>
-      oldData.map((booking) =>
-        booking.id === updatedBooking.id
-          ? { ...booking, ...updatedBooking }
-          : booking,
-      ),
-    );
+  // const updateBookingCache = (updatedBooking) => {
+  //   queryClient.setQueryData(["bookings", user?.userId], (oldData = []) =>
+  //     oldData.map((booking) =>
+  //       booking.id === updatedBooking.id
+  //         ? { ...booking, ...updatedBooking }
+  //         : booking,
+  //     ),
+  //   );
 
-    queryClient.setQueryData(
-      ["pending-bookings", user?.userId],
-      (oldData = []) =>
-        oldData.filter((booking) => booking.id !== updatedBooking.id),
-    );
+  //   queryClient.setQueryData(
+  //     ["pending-bookings", user?.userId],
+  //     (oldData = []) =>
+  //       oldData.filter((booking) => booking.id !== updatedBooking.id),
+  //   );
 
-    queryClient.setQueryData(
-      ["confirmed-bookings", user?.userId],
-      (oldData = []) =>
-        oldData.filter((booking) => booking.id !== updatedBooking.id),
-    );
-    queryClient.setQueryData(
-      ["revenue-bookings", user?.userId],
-      (oldData = []) =>
-        oldData.filter((booking) => booking.id !== updatedBooking.id),
-    );
-  };
+  //   queryClient.setQueryData(
+  //     ["confirmed-bookings", user?.userId],
+  //     (oldData = []) =>
+  //       oldData.filter((booking) => booking.id !== updatedBooking.id),
+  //   );
+  //   queryClient.setQueryData(
+  //     ["revenue-bookings", user?.userId],
+  //     (oldData = []) =>
+  //       oldData.filter((booking) => booking.id !== updatedBooking.id),
+  //   );
+  // };
 
   const acceptBookingMutation = useMutation({
     mutationFn: acceptBooking,
 
-    onSuccess: (updatedBooking) => {
-      updateBookingCache(updatedBooking);
+    onSuccess: () => {
+      queryClient.invalidateQueries(["bookings", user?.userId]);
 
       const noti = {
         userId: user?.userId,
@@ -77,8 +77,8 @@ const useBookingMutations = () => {
   const rejectBookingMutation = useMutation({
     mutationFn: rejectBooking,
 
-    onSuccess: (updatedBooking) => {
-      updateBookingCache(updatedBooking);
+    onSuccess: () => {
+      queryClient.invalidateQueries(["bookings", user?.userId]);
       const noti = {
         userId: user?.userId,
         email: user?.email,
@@ -107,8 +107,8 @@ const useBookingMutations = () => {
   const checkInBookingMutation = useMutation({
     mutationFn: checkIn,
 
-    onSuccess: (updatedBooking) => {
-      updateBookingCache(updatedBooking);
+    onSuccess: () => {
+      queryClient.invalidateQueries(["bookings", user?.userId]);
 
       const noti = {
         userId: user?.userId,
@@ -138,8 +138,10 @@ const useBookingMutations = () => {
   const checkOutBookingMutation = useMutation({
     mutationFn: checkOut,
 
-    onSuccess: (updatedBooking) => {
-      updateBookingCache(updatedBooking);
+    onSuccess: () => {
+      // updateBookingCache(updatedBooking);
+      queryClient.invalidateQueries(["bookings", user?.userId]);
+
       const noti = {
         userId: user?.userId,
         email: user?.email,

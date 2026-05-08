@@ -4,6 +4,7 @@ import { IconBed, IconBedOff, IconTools, IconAlertCircle } from "@tabler/icons-r
 // ******************************** Components ********************************
 import PerformanceRoomCard from "../../Card/Room/PerformanceRoomCard";
 import useGetAllRooms from "../../../Hooks/Room/useGetAllRooms";
+import Error from "../../Loader/Error";
 
 const RoomPerformanceCards = () => {
   const { data: rooms, isLoading, error } = useGetAllRooms();

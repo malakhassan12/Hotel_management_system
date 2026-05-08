@@ -9,7 +9,7 @@ import Loading from "../../Loader/Loading";
 import NoData from "../../Empty/NoData";
 import { mapRoomData } from "../../../Functions/Room/RoomFunctions";
 import useSearchRoomStore from "../../../Store/useSearchRoomStore";
-
+import Error from "../../Loader/Error"
 const RoomCards = () => {
   const { data: response = [], isLoading, error } = useGetAllRooms();
   const { role } = useAuthStore();

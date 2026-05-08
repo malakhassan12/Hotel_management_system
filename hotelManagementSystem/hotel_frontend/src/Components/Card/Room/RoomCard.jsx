@@ -28,9 +28,17 @@ import { roles, roomStatus } from "../../../Constants/ConstantsFromBack";
 import useRoomMutations from "../../../Hooks/Room/useRoomMutations";
 import getStatusConfigRoom from "../../../Utils/Room/getStatusConfigRoom";
 import WishListBtn from "../../Buttons/WishListBtn";
+import useGetImagesByRoom from "../../../Hooks/Room/useGetImagesByRoom";
 
 const RoomCard = ({ item, role = "CUSTOMER" }) => {
   const navigate = useNavigate();
+
+  console.log("object", item);
+
+  const { data: res = [] } = useGetImagesByRoom(item?.id);
+
+  const images = Array.isArray(res) ? res : [];
+  console.log(images);
 
   const roleNavigate =
     role == "EMPLOYEE"
@@ -92,7 +100,7 @@ const RoomCard = ({ item, role = "CUSTOMER" }) => {
     >
       <Card.Section>
         <Image
-          src={item.image || defaultImage}
+          src={images[0] || defaultImage}
           height={200}
           alt={item.title}
           fallbackSrc="https://placehold.co/400x250?text=Room+Image"

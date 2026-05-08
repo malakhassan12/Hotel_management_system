@@ -7,6 +7,24 @@ export const addReview = async (data) => {
   return res?.data;
 };
 
+export const deleteReview = async (reviewId) => {
+  const res = await reviewClient.delete(`/delete/${reviewId}`);
+
+  return res?.data;
+};
+
+export const editReview = async ({ reviewId, rating, comment }) => {
+const res = await reviewClient.put(`/update/${reviewId}`, {}, {
+    params: {
+      rating: rating,
+      comment: comment,
+    },
+  });
+  return res?.data;
+};
+
+
+// --------------------------------------------
 export const getReviewsByUserId = async (userId) => {
   try {
     const res = await reviewClient.get(`/user/${userId}`);

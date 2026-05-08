@@ -1,4 +1,8 @@
-import { useMutation } from "@tanstack/react-query";
+import {
+  QueryClient,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import {
   addToFavourites,
   clearFavourites,
@@ -8,14 +12,17 @@ import useAuthStore from "../../Store/authStore";
 import { notifications } from "@mantine/notifications";
 import useNotificationMutations from "../Notification/useNotificationMutations";
 
-const useFavouritesMutations = () => {
+const useFavouritesMutations = (roomId) => {
   const { user } = useAuthStore();
+  const queryClient = useQueryClient();
 
   const { sendNotiMutation } = useNotificationMutations();
 
   const addToFavouritesMutation = useMutation({
     mutationFn: addToFavourites,
     onSuccess: () => {
+      queryClient.invalidateQueries(["in-wishlist", user?.userId, roomId]);
+
       const noti = {
         userId: user?.userId,
         email: user?.email,
@@ -45,6 +52,8 @@ const useFavouritesMutations = () => {
   const deleteItemFromFavouritesMutation = useMutation({
     mutationFn: deleteItemFromFavourites,
     onSuccess: () => {
+      queryClient.invalidateQueries(["in-wishlist", user?.userId, roomId]);
+
       const noti = {
         userId: user?.userId,
         email: user?.email,
@@ -74,6 +83,8 @@ const useFavouritesMutations = () => {
   const clearFavouritesMutation = useMutation({
     mutationFn: clearFavourites,
     onSuccess: () => {
+      queryClient.invalidateQueries(["in-wishlist", user?.userId, roomId]);
+
       const noti = {
         userId: user?.userId,
         email: user?.email,

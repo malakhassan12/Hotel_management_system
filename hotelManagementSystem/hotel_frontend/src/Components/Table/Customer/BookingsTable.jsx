@@ -184,8 +184,7 @@ const BookingsTable = ({ bookings }) => {
 
               {/* Actions */}
               <Group gap="xs" justify="center">
-                {(booking.status === "pending" ||
-                  booking.status === "PENDING") &&
+                {
                   (!booking?.paymentStatus) && (
                     <Tooltip label="Make Payment">
                       <ActionIcon
