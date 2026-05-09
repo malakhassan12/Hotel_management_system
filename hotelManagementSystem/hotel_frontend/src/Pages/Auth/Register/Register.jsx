@@ -253,7 +253,7 @@ const Register = () => {
                   value: roles[2],
                   label: "Receptionist ",
                 },
-                { value: roles[0], label: "Admin" },
+                // { value: roles[0], label: "Admin" },
               ]}
               {...form.getInputProps("role")}
             />
