@@ -20,6 +20,10 @@ const AddRoomBtn = () => {
     console.log([...formData.entries()]);
 
     addRoomMutation.mutate(formData);
+
+    if (addRoomMutation?.isSuccess) {
+      close();
+    }
   };
   return (
     <div>

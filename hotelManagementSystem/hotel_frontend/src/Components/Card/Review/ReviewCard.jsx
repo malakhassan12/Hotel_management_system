@@ -86,10 +86,7 @@ const ReviewCard = ({ roomId }) => {
     return <Error name={"Reviews"} error={error} />;
   }
 
-  if (reviews.length === 0) {
-    return <NoData name={"Reviews"} />;
-  }
-
+ 
   return (
     <>
       {/* Show Review Form if user can review */}

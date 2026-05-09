@@ -62,6 +62,13 @@ const ManageRoomsRow = ({ room }) => {
     } else if (mode === "create") {
       addRoomMutation.mutate(formData);
     }
+
+    if (updateRoomMutation?.isSuccess) {
+      close();
+    }
+    if (addRoomMutation?.isSuccess) {
+      close();
+    }
   };
 
   const isLoading = updateRoomMutation.isLoading || addRoomMutation.isLoading;
